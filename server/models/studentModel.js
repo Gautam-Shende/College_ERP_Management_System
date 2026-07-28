@@ -1,8 +1,5 @@
 const db = require("../config/db");
 
-/* ============================
-   Get Students
-============================ */
 
 const getStudents = async (
   page,
@@ -78,10 +75,6 @@ const getStudents = async (
 
   return rows;
 };
-
-/* ============================
-   Total Count
-============================ */
 
 const getStudentsCount = async (search, course, city) => {
   let sql = `
