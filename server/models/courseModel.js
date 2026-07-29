@@ -1,9 +1,15 @@
 const db = require("../config/db");
 
-const getCourses = async () => {
+const getAllCourses = async () => {
   const sql = `
-    SELECT * FROM courses
-    ORDER BY course_name ASC
+    SELECT
+      c.id,
+      c.course_name,
+      d.department_name
+    FROM courses c
+    INNER JOIN departments d
+      ON c.department_id = d.id
+    ORDER BY c.course_name ASC
   `;
 
   const [rows] = await db.query(sql);
@@ -12,5 +18,5 @@ const getCourses = async () => {
 };
 
 module.exports = {
-  getCourses,
+  getAllCourses,
 };

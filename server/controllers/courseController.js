@@ -1,15 +1,20 @@
-const Course = require("../models/courseModel");
+const courseModel = require("../models/courseModel");
 
-const getCourses = async (req, res, next) => {
+const getCourses = async (req, res) => {
   try {
-    const courses = await Course.getCourses();
+    const courses = await courseModel.getAllCourses();
 
     res.status(200).json({
       success: true,
       data: courses,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch courses",
+    });
   }
 };
 
