@@ -2,15 +2,25 @@ const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
-const getUsers = async (req, res, next) => {
+const getUsers = async (req, res) => {
   try {
-    const users = await User.getUsers();
+    const users = await userModel.getAllUsers();
+
     res.status(200).json({
       success: true,
+
+      count: users.length,
+
       data: users,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+
+      message: "Failed to fetch users",
+    });
   }
 };
 
