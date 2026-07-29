@@ -46,7 +46,6 @@ const getUsers = async (
 
   const params = [];
 
-  // Search
   if (search) {
     sql += `
       AND (
@@ -58,21 +57,13 @@ const getUsers = async (
     params.push(`%${search}%`, `%${search}%`);
   }
 
-  // Role Filter
   if (role) {
-    sql += `
-      AND u.role = ?
-    `;
-
+    sql += ` AND u.role = ? `;
     params.push(role);
   }
 
-  // Department Filter
   if (department_id) {
-    sql += `
-      AND u.department_id = ?
-    `;
-
+    sql += ` AND u.department_id = ? `;
     params.push(Number(department_id));
   }
 
@@ -82,8 +73,7 @@ const getUsers = async (
     OFFSET ?
   `;
 
-  params.push(Number(limit));
-  params.push(Number(offset));
+  params.push(Number(limit), Number(offset));
 
   const [rows] = await db.query(sql, params);
 
@@ -111,18 +101,12 @@ const getUsersCount = async (search, role, department_id) => {
   }
 
   if (role) {
-    sql += `
-      AND role = ?
-    `;
-
+    sql += ` AND role = ? `;
     params.push(role);
   }
 
   if (department_id) {
-    sql += `
-      AND department_id = ?
-    `;
-
+    sql += ` AND department_id = ? `;
     params.push(Number(department_id));
   }
 
@@ -133,75 +117,87 @@ const getUsersCount = async (search, role, department_id) => {
 
 const getAllUsers = async () => {
   const sql = `
-        SELECT
-
-            u.id,
-
-            u.name,
-
-            u.email,
-
-            u.role,
-
-            u.designation,
-
-            u.phone,
-
-            u.status,
-
-            d.department_name
-
-        FROM users u
-
-        LEFT JOIN departments d
-
-            ON u.department_id = d.id
-
-        ORDER BY u.id DESC
-    `;
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.role,
+      u.designation,
+      u.phone,
+      u.status,
+      u.created_at,
+      d.department_name
+    FROM users u
+    LEFT JOIN departments d
+      ON u.department_id = d.id
+    ORDER BY u.id DESC
+  `;
 
   const [rows] = await db.query(sql);
 
   return rows;
 };
 
-const findUserByEmail = async (email) => {
+const getUserById = async (id) => {
   const sql = `
-        SELECT *
-        FROM users
-        WHERE email = ?
-    `;
+    SELECT
+      id,
+      name,
+      email,
+      role,
+      department_id,
+      designation,
+      phone,
+      status,
+      created_at
+    FROM users
+    WHERE id = ?
+    LIMIT 1
+  `;
 
-  const [rows] = await db.query(sql, [email]);
+  const [rows] = await db.query(sql, [id]);
+
   return rows[0];
 };
 
-const getUserById = async (id) => {
+const getUserByEmail = async (email) => {
   const sql = `
-    SELECT * FROM users
-    WHERE id = ? `;
+    SELECT
+      id,
+      name,
+      email,
+      password,
+      role,
+      department_id,
+      designation,
+      phone,
+      status,
+      created_at
+    FROM users
+    WHERE email = ?
+    LIMIT 1
+  `;
 
-  const [row] = await db.query(sql, [id]);
-  return row[0];
+  const [rows] = await db.query(sql, [email]);
+
+  return rows[0];
 };
 
 const createUser = async (userData) => {
   const sql = `
-        INSERT INTO users
-        (
-            name,
-            email,
-            password,
-            role,
-            department_id,
-            designation,
-            phone
-        )
-        VALUES
-        (
-            ?,?,?,?,?,?,?
-        )
-    `;
+    INSERT INTO users
+    (
+      name,
+      email,
+      password,
+      role,
+      department_id,
+      designation,
+      phone
+    )
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?)
+  `;
 
   const [result] = await db.query(sql, [
     userData.name,
@@ -216,31 +212,13 @@ const createUser = async (userData) => {
   return result;
 };
 
-const getUserByEmail = async (email) => {
-  const sql = `
-        SELECT *
-        FROM users
-        WHERE email=?
-    `;
-
-  const [rows] = await db.query(sql, [email]);
-
-  return rows[0];
-};
-
 const updateUserStatus = async (id, status) => {
-  const allowedStatus = ["active", "inactive"];
-
-  if (!allowedStatus.includes(status)) {
-    throw new Error("Invalid Status");
-  }
-
   const sql = `
-      UPDATE users
-      SET
-        status=?,
-        updated_at=CURRENT_TIMESTAMP
-      WHERE id=?
+    UPDATE users
+    SET
+      status = ?,
+      updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
   `;
 
   const [result] = await db.query(sql, [status, id]);
@@ -249,12 +227,11 @@ const updateUserStatus = async (id, status) => {
 };
 
 module.exports = {
-  createUser,
   getUsers,
-  getAllUsers,
   getUsersCount,
+  getAllUsers,
   getUserById,
   getUserByEmail,
-  findUserByEmail,
+  createUser,
   updateUserStatus,
 };
