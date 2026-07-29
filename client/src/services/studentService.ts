@@ -1,9 +1,6 @@
 import api from "../api/axios";
 import type { Student } from "../types/student";
 
-/* ============================
-   Get All Students
-============================ */
 
 export const getStudents = async (
   page: number,
@@ -29,9 +26,6 @@ export const getStudents = async (
   return response.data;
 };
 
-/* ============================
-   Get Student By ID
-============================ */
 
 export const getStudentById = async (id: number) => {
   const response = await api.get(`/students/${id}`);
@@ -39,9 +33,6 @@ export const getStudentById = async (id: number) => {
   return response.data;
 };
 
-/* ============================
-   Create Student
-============================ */
 
 export const createStudent = async (student: Student) => {
   const response = await api.post("/students", student);
@@ -49,9 +40,6 @@ export const createStudent = async (student: Student) => {
   return response.data;
 };
 
-/* ============================
-   Update Student
-============================ */
 
 export const updateStudent = async (id: number, student: Student) => {
   const response = await api.put(`/students/${id}`, student);
@@ -59,9 +47,6 @@ export const updateStudent = async (id: number, student: Student) => {
   return response.data;
 };
 
-/* ============================
-   Delete Student
-============================ */
 
 export const deleteStudent = async (id: number) => {
   const response = await api.delete(`/students/${id}`);

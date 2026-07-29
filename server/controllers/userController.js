@@ -4,17 +4,45 @@ const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.getAllUsers();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    const search = req.query.search || "";
+    const role = req.query.role || "";
+    const department_id = req.query.department_id || "";
+
+    const sortBy = req.query.sortBy || "id";
+    const order = req.query.order || "DESC";
+
+    const users = await User.getUsers(
+      page,
+      limit,
+      search,
+      role,
+      department_id,
+      sortBy,
+      order,
+    );
+
+    const totalRecords = await User.getUsersCount(search, role, department_id);
 
     res.status(200).json({
       success: true,
 
-      count: users.length,
-
       data: users,
+
+      pagination: {
+        currentPage: page,
+
+        totalPages: Math.ceil(totalRecords / limit),
+
+        totalRecords,
+
+        limit,
+      },
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -47,15 +75,8 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      role,
-      department_id,
-      designation,
-      phone,
-    } = req.body;
+    const { name, email, password, role, department_id, designation, phone } =
+      req.body;
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({
@@ -63,7 +84,9 @@ const createUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.getUserByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.getUserByEmail(normalizedEmail);
 
     if (existingUser) {
       return res.status(400).json({
@@ -71,22 +94,57 @@ const createUser = async (req, res) => {
       });
     }
 
+    const allowedRoles = ["teacher", "hod", "admission_staff"];
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role",
+      });
+    }
+
+    if ((role === "teacher" || role === "hod") && !department_id) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Department is required",
+      });
+    }
+
+    if (!designation) {
+      return res.status(400).json({
+        success: false,
+
+        message: "Designation is required",
+      });
+    }
+
+    if (!phone || phone.length !== 10) {
+      return res.status(400).json({
+        message: "Invalid phone number",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await User.createUser({
-      name,
-      email,
-      password: hashedPassword,
+    const userData = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      designation: designation.trim(),
       role,
       department_id,
-      designation,
-      phone,
+      phone: phone.trim(),
+    };
+
+    const result = await User.createUser({
+      ...userData,
+      password: hashedPassword,
     });
 
     res.status(201).json({
+      success: true,
       message: "Employee created successfully",
-
-      id: result.insertId,
+      employeeId: result.insertId,
     });
   } catch (error) {
     console.log(error);

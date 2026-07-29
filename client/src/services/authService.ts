@@ -17,21 +17,14 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return response.data;
 };
 
-
 export const registerUser = async (
-
-data: RegisterRequest
-
+  data: RegisterRequest,
 ): Promise<RegisterResponse> => {
+  const response = await api.post(
+    "/users/register",
 
-const response = await api.post(
+    data,
+  );
 
-"/users/register",
-
-data
-
-);
-
-return response.data;
-
+  return response.data;
 };
