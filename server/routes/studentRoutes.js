@@ -1,8 +1,6 @@
 const express = require("express");
 
 const router = express.Router();
-const authenticate = require("../middleware/authMiddleware");
-const authorize = require("../middleware/authorize");
 
 const {
   getStudents,
@@ -10,21 +8,39 @@ const {
   createStudent,
   updateStudent,
   deleteStudent,
-  searchStudents,
 } = require("../controllers/studentController");
 
-const validateStudent = require("../middleware/validation");
+const authMiddleware = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorize");
 
-router.get("/", authenticate,authorize("student", "principal"), getStudents);
-router.get("/search", authenticate, authorize("principal"), searchStudents );
+router.get(
+  "/",
+  authMiddleware,
+  authorize("principal", "hod", "teacher", "admission_staff"),
+  getStudents,
+);
 
-router.get("/:id",authenticate, authorize("principal"), getStudentById);
+router.get(
+  "/:id",
+  authMiddleware,
+  authorize("principal", "hod", "teacher", "admission_staff"),
+  getStudentById,
+);
 
-router.post("/", authenticate, authorize("principal"), validateStudent, createStudent);
+router.post(
+  "/",
+  authMiddleware,
+  authorize("principal", "admission_staff"),
+  createStudent,
+);
 
-router.put("/:id", authenticate, authorize("principal"), updateStudent);
+router.put(
+  "/:id",
+  authMiddleware,
+  authorize("principal", "hod", "admission_staff"),
+  updateStudent,
+);
 
-router.delete("/:id",authenticate,authorize("principal"),deleteStudent);
-
+router.delete("/:id", authMiddleware, authorize("principal"), deleteStudent);
 
 module.exports = router;

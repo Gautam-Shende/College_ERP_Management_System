@@ -68,11 +68,28 @@ const createStudent = async (req, res, next) => {
   try {
     const { name, email, course_id, city } = req.body;
 
+    if (!name || !email || !course_id || !city) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingStudent = await Student.getStudentByEmail(normalizedEmail);
+
+    if (existingStudent) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
     const result = await Student.createStudent({
-      name,
-      email,
+      name: name.trim(),
+      email: normalizedEmail,
       course_id,
-      city,
+      city: city.trim(),
     });
 
     res.status(201).json({
@@ -85,21 +102,20 @@ const createStudent = async (req, res, next) => {
   }
 };
 
-
 const updateStudent = async (req, res, next) => {
   try {
     const id = req.params.id;
 
     const { name, email, course_id, city } = req.body;
 
-    const result = await Student.updateStudent(id, {
+    const student = await Student.updateStudent(id, {
       name,
       email,
       course_id,
       city,
     });
 
-    if (result.affectedRows === 0) {
+    if (!student) {
       return res.status(404).json({
         success: false,
         message: "Student Not Found",
@@ -115,14 +131,13 @@ const updateStudent = async (req, res, next) => {
   }
 };
 
-
 const deleteStudent = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const result = await Student.deleteStudent(id);
+    const student = await Student.getStudentById(id);
 
-    if (result.affectedRows === 0) {
+    if (!student === 0) {
       return res.status(404).json({
         success: false,
         message: "Student Not Found",
@@ -138,32 +153,11 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
-
-const searchStudents = async (req, res, next) => {
-  try {
-    const filters = {
-      name: req.query.name || "",
-      email: req.query.email || "",
-      course: req.query.course || "",
-      city: req.query.city || "",
-    };
-
-    const students = await Student.searchStudents(filters);
-
-    res.status(200).json({
-      success: true,
-      data: students,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
 module.exports = {
   getStudents,
   getStudentById,
+  getStudentByEmail,
   createStudent,
   updateStudent,
   deleteStudent,
-  searchStudents,
 };

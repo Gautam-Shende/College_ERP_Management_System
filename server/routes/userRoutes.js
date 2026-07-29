@@ -9,6 +9,7 @@ const {
   getUserById,
   createUser,
   updateUserStatus,
+  getCurrentUser
 } = require("../controllers/userController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -27,6 +28,9 @@ router.get("/users/:id", authMiddleware, authorize("principal"), getUserById);
 router.post("/users", authMiddleware, authorize("principal"), createUser);
 
 router.patch("/users/:id/status", authMiddleware, authorize("principal"), updateUserStatus,
+);
+
+router.get("/me", authMiddleware,getCurrentUser
 );
 
 module.exports = router;

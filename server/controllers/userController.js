@@ -362,6 +362,14 @@ const updateUserStatus = async (req, res) => {
   }
 };
 
+const getCurrentUser = (req, res) => {
+  res.status(200).json({
+    success: true,
+
+    data: req.user,
+  });
+};
+
 module.exports = {
   registerUser,
   getUsers,
@@ -369,4 +377,5 @@ module.exports = {
   getUserById,
   loginUser,
   updateUserStatus,
+  getCurrentUser
 };

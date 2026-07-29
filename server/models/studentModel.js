@@ -32,28 +32,31 @@ const getStudents = async (page, limit, search, sortBy, order) => {
 
       FROM students s
 
-      INNER JOIN courses c
-          ON s.course_id = c.id
+          LEFT JOIN courses c
+             ON s.course_id = c.id
 
-      INNER JOIN departments d
-          ON c.department_id = d.id
+          LEFT JOIN departments d
+              ON c.department_id = d.id
+
+               WHERE 1 = 1
   `;
 
   const params = [];
 
   if (search) {
     sql += `
-        WHERE
+        AND
+(
+    s.name LIKE ?
 
-        s.name LIKE ?
+    OR s.email LIKE ?
 
-        OR s.email LIKE ?
+    OR c.course_name LIKE ?
 
-        OR c.course_name LIKE ?
+    OR d.department_name LIKE ?
 
-        OR d.department_name LIKE ?
-
-        OR s.city LIKE ?
+    OR s.city LIKE ?
+)
     `;
 
     params.push(
@@ -86,11 +89,11 @@ const getStudentsCount = async (search) => {
 
       FROM students s
 
-      INNER JOIN courses c
-      ON s.course_id = c.id
+      LEFT JOIN courses c
 
-      INNER JOIN departments d
-      ON c.department_id = d.id
+       LEFT JOIN departments d
+
+        WHERE 1 = 1
   `;
 
   const params = [];
@@ -152,6 +155,18 @@ const getStudentById = async (id) => {
   return rows[0];
 };
 
+const getStudentByEmail = async (email) => {
+  const sql = `
+        SELECT *
+        FROM students
+        WHERE email = ?
+    `;
+
+  const [rows] = await db.query(sql, [email]);
+
+  return rows[0];
+};
+
 const createStudent = async (studentData) => {
   const sql = `
     INSERT INTO students
@@ -178,7 +193,7 @@ const createStudent = async (studentData) => {
 };
 
 const updateStudent = async (id, studentData) => {
-    const sql = `
+  const sql = `
         UPDATE students
         SET
             name=?,
@@ -189,14 +204,14 @@ const updateStudent = async (id, studentData) => {
 
     `;
 
-    const [result]=await db.query(sql,[
-        studentData.name,
-        studentData.email,
-        studentData.course_id,
-        studentData.city,
-        id
-    ]);
-    return result;
+  const [result] = await db.query(sql, [
+    studentData.name,
+    studentData.email,
+    studentData.course_id,
+    studentData.city,
+    id,
+  ]);
+  return result;
 };
 
 const deleteStudent = async (id) => {
@@ -210,40 +225,6 @@ const deleteStudent = async (id) => {
   return result;
 };
 
-const searchStudents = async (filters) => {
-  let sql = `
-    SELECT *
-    FROM students
-    WHERE 1 = 1
-  `;
-
-  const values = [];
-
-  if (filters.name) {
-    sql += " AND name LIKE ?";
-    values.push(`%${filters.name}%`);
-  }
-
-  if (filters.email) {
-    sql += " AND email LIKE ?";
-    values.push(`%${filters.email}%`);
-  }
-
-  if (filters.course) {
-    sql += " AND course = ?";
-    values.push(filters.course);
-  }
-
-  if (filters.city) {
-    sql += " AND city = ?";
-    values.push(filters.city);
-  }
-
-  const [rows] = await db.query(sql, values);
-
-  return rows;
-};
-
 module.exports = {
   getStudents,
   getStudentsCount,
@@ -251,5 +232,4 @@ module.exports = {
   createStudent,
   updateStudent,
   deleteStudent,
-  searchStudents,
 };
