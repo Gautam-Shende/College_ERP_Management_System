@@ -156,7 +156,6 @@ const deleteStudent = async (req, res, next) => {
 module.exports = {
   getStudents,
   getStudentById,
-  getStudentByEmail,
   createStudent,
   updateStudent,
   deleteStudent,

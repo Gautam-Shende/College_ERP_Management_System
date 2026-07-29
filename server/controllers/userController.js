@@ -169,9 +169,9 @@ const createUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
+    let { name, email, password, role } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !role) {
       return res.status(400).json({
         success: false,
         message: "Name, email and password are required",
@@ -203,10 +203,7 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-
-      // Public Register → Student Only
-      role: "student",
-
+      role,
       department_id: null,
       designation: null,
       phone: null,
