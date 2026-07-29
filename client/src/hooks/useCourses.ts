@@ -2,27 +2,29 @@ import { useEffect, useState } from "react";
 
 import { getCourses } from "../services/courseService";
 
-import type { Course } from "../types/course";
-
 function useCourses() {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState([]);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const data = await getCourses();
+
+        setCourses(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchCourses();
   }, []);
 
-  const fetchCourses = async () => {
-    try {
-      const response = await getCourses();
-
-      setCourses(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return {
     courses,
+
+    loading,
   };
 }
 

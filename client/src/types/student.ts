@@ -1,14 +1,15 @@
-
-
-
 export interface Student {
-  id: number;
+  id?: number;
 
   name: string;
 
   email: string;
 
-  course: string;
+  course_id: number;
+
+  course?: string;
+
+  department?: string;
 
   city: string;
 }

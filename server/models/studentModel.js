@@ -173,7 +173,7 @@ const createStudent = async (studentData) => {
   const [result] = await db.query(sql, [
     studentData.name,
     studentData.email,
-    studentData.course,
+    studentData.course_id,
     studentData.city,
   ]);
 
@@ -194,7 +194,7 @@ const updateStudent = async (id, studentData) => {
   const [result] = await db.query(sql, [
     studentData.name,
     studentData.email,
-    studentData.course,
+    studentData.course_id,
     studentData.city,
     id,
   ]);

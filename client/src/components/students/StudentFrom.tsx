@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import type { Student } from "../../types/student";
-
 import useCourses from "../../hooks/useCourses";
 
 interface Props {
@@ -16,7 +15,6 @@ function StudentForm({ defaultValues, onSubmit, loading = false }: Props) {
 
   const { register, handleSubmit, reset } = useForm<Student>();
 
-  // Important for Edit Form
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
@@ -25,6 +23,8 @@ function StudentForm({ defaultValues, onSubmit, loading = false }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Name */}
+
       <div>
         <label className="mb-2 block font-medium">Name</label>
 
@@ -33,6 +33,8 @@ function StudentForm({ defaultValues, onSubmit, loading = false }: Props) {
           className="w-full rounded border p-3 outline-none focus:border-blue-500"
         />
       </div>
+
+      {/* Email */}
 
       <div>
         <label className="mb-2 block font-medium">Email</label>
@@ -44,19 +46,28 @@ function StudentForm({ defaultValues, onSubmit, loading = false }: Props) {
         />
       </div>
 
+      {/* Course */}
+
       <div>
         <label className="mb-2 block font-medium">Course</label>
 
-        <select {...register("course")} className="w-full rounded border p-3">
+        <select
+          {...register("course_id", {
+            valueAsNumber: true,
+          })}
+          className="w-full rounded border p-3"
+        >
           <option value="">Select Course</option>
 
-          {courses.map((course) => (
-            <option key={course.id} value={course.course_name}>
+          {courses.map((course: any) => (
+            <option key={course.id} value={course.id}>
               {course.course_name}
             </option>
           ))}
         </select>
       </div>
+
+      {/* City */}
 
       <div>
         <label className="mb-2 block font-medium">City</label>
@@ -66,6 +77,8 @@ function StudentForm({ defaultValues, onSubmit, loading = false }: Props) {
           className="w-full rounded border p-3 outline-none focus:border-blue-500"
         />
       </div>
+
+      {/* Submit */}
 
       <button
         type="submit"
