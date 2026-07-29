@@ -15,16 +15,16 @@ const {
 
 const validateStudent = require("../middleware/validation");
 
-router.get("/", authenticate,authorize("student", "admin"), getStudents);
-router.get("/search", authenticate, authorize("admin"), searchStudents );
+router.get("/", authenticate,authorize("student", "principal"), getStudents);
+router.get("/search", authenticate, authorize("principal"), searchStudents );
 
-router.get("/:id",authenticate, authorize("admin"), getStudentById);
+router.get("/:id",authenticate, authorize("principal"), getStudentById);
 
-router.post("/", authenticate, authorize("admin"), validateStudent, createStudent);
+router.post("/", authenticate, authorize("principal"), validateStudent, createStudent);
 
-router.put("/:id", authenticate, authorize("admin"), updateStudent);
+router.put("/:id", authenticate, authorize("principal"), updateStudent);
 
-router.delete("/:id",authenticate,authorize("admin"),deleteStudent);
+router.delete("/:id",authenticate,authorize("principal"),deleteStudent);
 
 
 module.exports = router;

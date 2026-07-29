@@ -1,116 +1,122 @@
 const db = require("../config/db");
 
-
-const getStudents = async (
-  page,
-  limit,
-  search,
-  sortBy,
-  order,
-  course,
-  city,
-) => {
+const getStudents = async (page, limit, search, sortBy, order) => {
   const offset = (page - 1) * limit;
 
-  const allowedColumns = ["id", "name", "email", "course", "city"];
+  const sortColumns = {
+    id: "s.id",
+    name: "s.name",
+    email: "s.email",
+    course: "c.course_name",
+    department: "d.department_name",
+    city: "s.city",
+  };
 
-  if (!allowedColumns.includes(sortBy)) {
-    sortBy = "id";
-  }
-
-  order = order === "ASC" ? "ASC" : "DESC";
+  const sortColumn = sortColumns[sortBy] || "s.id";
+  const sortOrder = order === "ASC" ? "ASC" : "DESC";
 
   let sql = `
-    SELECT *
-    FROM students
-    WHERE 1 = 1
+      SELECT
+
+          s.id,
+
+          s.name,
+
+          s.email,
+
+          c.course_name AS course,
+
+          d.department_name AS department,
+
+          s.city
+
+      FROM students s
+
+      INNER JOIN courses c
+          ON s.course_id = c.id
+
+      INNER JOIN departments d
+          ON c.department_id = d.id
   `;
 
   const params = [];
 
-  // Search
-
   if (search) {
     sql += `
-      AND (
-        name LIKE ?
-        OR email LIKE ?
-        OR city LIKE ?
-      )
+        WHERE
+
+        s.name LIKE ?
+
+        OR s.email LIKE ?
+
+        OR c.course_name LIKE ?
+
+        OR d.department_name LIKE ?
+
+        OR s.city LIKE ?
     `;
 
-    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
-  }
-
-  // Course Filter
-
-  if (course) {
-    sql += `
-      AND course = ?
-    `;
-
-    params.push(course);
-  }
-
-  // City Filter
-
-  if (city) {
-    sql += `
-      AND city = ?
-    `;
-
-    params.push(city);
+    params.push(
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+    );
   }
 
   sql += `
-    ORDER BY ${sortBy} ${order}
-    LIMIT ?
-    OFFSET ?
+      ORDER BY ${sortColumn} ${sortOrder}
+
+      LIMIT ?
+
+      OFFSET ?
   `;
 
-  params.push(Number(limit));
-  params.push(Number(offset));
+  params.push(Number(limit), Number(offset));
 
   const [rows] = await db.query(sql, params);
 
   return rows;
 };
 
-const getStudentsCount = async (search, course, city) => {
+const getStudentsCount = async (search) => {
   let sql = `
-    SELECT COUNT(*) AS total
-    FROM students
-    WHERE 1 = 1
+      SELECT COUNT(*) AS total
+
+      FROM students s
+
+      INNER JOIN courses c
+      ON s.course_id = c.id
+
+      INNER JOIN departments d
+      ON c.department_id = d.id
   `;
 
   const params = [];
 
   if (search) {
     sql += `
-      AND (
-        name LIKE ?
-        OR email LIKE ?
-        OR city LIKE ?
-      )
+      WHERE
+
+      s.name LIKE ?
+
+      OR s.email LIKE ?
+
+      OR c.course_name LIKE ?
+
+      OR d.department_name LIKE ?
+
+      OR s.city LIKE ?
     `;
 
-    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
-  }
-
-  if (course) {
-    sql += `
-      AND course = ?
-    `;
-
-    params.push(course);
-  }
-
-  if (city) {
-    sql += `
-      AND city = ?
-    `;
-
-    params.push(city);
+    params.push(
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+      `%${search}%`,
+    );
   }
 
   const [[result]] = await db.query(sql, params);
@@ -118,25 +124,33 @@ const getStudentsCount = async (search, course, city) => {
   return result.total;
 };
 
-/* ============================
-   Get Student By ID
-============================ */
-
 const getStudentById = async (id) => {
   const sql = `
-    SELECT *
-    FROM students
-    WHERE id = ?
-  `;
+
+        SELECT
+
+            s.*,
+
+            c.course_name,
+
+            d.department_name
+
+        FROM students s
+
+        INNER JOIN courses c
+            ON s.course_id=c.id
+
+        INNER JOIN departments d
+            ON c.department_id=d.id
+
+        WHERE s.id=?
+
+    `;
 
   const [rows] = await db.query(sql, [id]);
 
   return rows[0];
 };
-
-/* ============================
-   Create Student
-============================ */
 
 const createStudent = async (studentData) => {
   const sql = `
@@ -144,7 +158,7 @@ const createStudent = async (studentData) => {
     (
       name,
       email,
-      course,
+      course_id,
       city
     )
     VALUES
@@ -165,10 +179,6 @@ const createStudent = async (studentData) => {
 
   return result;
 };
-
-/* ============================
-   Update Student
-============================ */
 
 const updateStudent = async (id, studentData) => {
   const sql = `
@@ -192,10 +202,6 @@ const updateStudent = async (id, studentData) => {
   return result;
 };
 
-/* ============================
-   Delete Student
-============================ */
-
 const deleteStudent = async (id) => {
   const sql = `
     DELETE FROM students
@@ -206,10 +212,6 @@ const deleteStudent = async (id) => {
 
   return result;
 };
-
-/* ============================
-   Search API
-============================ */
 
 const searchStudents = async (filters) => {
   let sql = `

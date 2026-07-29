@@ -37,7 +37,7 @@ const getUserById = async (req, res, next) => {
 
 const registerUser = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -47,7 +47,7 @@ const registerUser = async (req, res, next) => {
       email,
       password: hashedPassword,
 
-      role: "student",
+      role,
     });
 
     res.status(201).json({
