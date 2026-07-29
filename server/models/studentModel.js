@@ -163,10 +163,7 @@ const createStudent = async (studentData) => {
     )
     VALUES
     (
-      ?,
-      ?,
-      ?,
-      ?
+      ?,?,?,?
     )
   `;
 
@@ -181,25 +178,25 @@ const createStudent = async (studentData) => {
 };
 
 const updateStudent = async (id, studentData) => {
-  const sql = `
-    UPDATE students
-    SET
-      name = ?,
-      email = ?,
-      course = ?,
-      city = ?
-    WHERE id = ?
-  `;
+    const sql = `
+        UPDATE students
+        SET
+            name=?,
+            email=?,
+            course_id=?,
+            city=?
+        WHERE id=?
 
-  const [result] = await db.query(sql, [
-    studentData.name,
-    studentData.email,
-    studentData.course_id,
-    studentData.city,
-    id,
-  ]);
+    `;
 
-  return result;
+    const [result]=await db.query(sql,[
+        studentData.name,
+        studentData.email,
+        studentData.course_id,
+        studentData.city,
+        id
+    ]);
+    return result;
 };
 
 const deleteStudent = async (id) => {

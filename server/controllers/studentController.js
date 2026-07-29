@@ -1,9 +1,5 @@
 const Student = require("../models/studentModel");
 
-/* ============================
-   Get All Students
-============================ */
-
 const getStudents = async (req, res, next) => {
   try {
     const page = Number(req.query.page) || 1;
@@ -46,10 +42,6 @@ const getStudents = async (req, res, next) => {
   }
 };
 
-/* ============================
-   Get Student By Id
-============================ */
-
 const getStudentById = async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -72,18 +64,14 @@ const getStudentById = async (req, res, next) => {
   }
 };
 
-/* ============================
-   Create Student
-============================ */
-
 const createStudent = async (req, res, next) => {
   try {
-    const { name, email, course, city } = req.body;
+    const { name, email, course_id, city } = req.body;
 
     const result = await Student.createStudent({
       name,
       email,
-      course,
+      course_id,
       city,
     });
 
@@ -97,20 +85,17 @@ const createStudent = async (req, res, next) => {
   }
 };
 
-/* ============================
-   Update Student
-============================ */
 
 const updateStudent = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const { name, email, course, city } = req.body;
+    const { name, email, course_id, city } = req.body;
 
     const result = await Student.updateStudent(id, {
       name,
       email,
-      course,
+      course_id,
       city,
     });
 
@@ -130,9 +115,6 @@ const updateStudent = async (req, res, next) => {
   }
 };
 
-/* ============================
-   Delete Student
-============================ */
 
 const deleteStudent = async (req, res, next) => {
   try {
@@ -156,9 +138,6 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
-/* ============================
-   Advanced Search
-============================ */
 
 const searchStudents = async (req, res, next) => {
   try {

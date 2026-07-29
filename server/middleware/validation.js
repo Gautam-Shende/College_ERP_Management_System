@@ -2,7 +2,7 @@
 const validateStudent = (req, res, next) => {
   const { name, email, course, city } = req.body;
 
-  if (!name || !email || !course || !city) {
+  if (!name || !email || !course_id || !city) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
