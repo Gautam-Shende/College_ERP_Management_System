@@ -8,6 +8,8 @@ import PublicRoute from "./PublicRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import EditStudent from "../pages/students/EditStudent.tsx";
+import AddUser from "../pages/users/AddUser";
+import EditUser from "../pages/users/EditUser";
 
 function AppRoutes() {
   return (
@@ -18,6 +20,8 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+        <Route path="/users/add" element={<AddUser />} />
+        <Route path="/users/edit/:id" element={<EditUser />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>

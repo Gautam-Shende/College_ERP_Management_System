@@ -234,10 +234,59 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+const updateUserStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: "Status is required",
+      });
+    }
+
+    const allowedStatus = ["active", "inactive"];
+
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status",
+      });
+    }
+
+    const result = await User.updateUserStatus(id, status);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message:
+        status === "active"
+          ? "Employee activated successfully"
+          : "Employee deactivated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   getUsers,
   createUser,
   getUserById,
   loginUser,
+  updateUserStatus
 };

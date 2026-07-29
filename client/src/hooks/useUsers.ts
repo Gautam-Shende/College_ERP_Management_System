@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import {
   getUsers,
   deleteUser as deleteUserService,
+  updateUserStatus as updateUserStatusService,
 } from "../services/userService";
 
 function useUsers() {
@@ -83,6 +84,30 @@ function useUsers() {
     }
   };
 
+  const updateStatus = async (id: number, status: "active" | "inactive") => {
+    const confirmed = window.confirm(
+      `Are you sure you want to ${
+        status === "active" ? "activate" : "deactivate"
+      } this employee?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+
+      const response = await updateUserStatusService(id, status);
+
+      toast.success(response.message);
+
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Status update failed");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
   }, [page, search, role, department, sortBy, order]);
@@ -119,6 +144,7 @@ function useUsers() {
     deleteUser,
 
     fetchUsers,
+    updateStatus
   };
 }
 

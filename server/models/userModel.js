@@ -228,6 +228,26 @@ const getUserByEmail = async (email) => {
   return rows[0];
 };
 
+const updateUserStatus = async (id, status) => {
+  const allowedStatus = ["active", "inactive"];
+
+  if (!allowedStatus.includes(status)) {
+    throw new Error("Invalid Status");
+  }
+
+  const sql = `
+      UPDATE users
+      SET
+        status=?,
+        updated_at=CURRENT_TIMESTAMP
+      WHERE id=?
+  `;
+
+  const [result] = await db.query(sql, [status, id]);
+
+  return result;
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -236,4 +256,5 @@ module.exports = {
   getUserById,
   getUserByEmail,
   findUserByEmail,
+  updateUserStatus,
 };

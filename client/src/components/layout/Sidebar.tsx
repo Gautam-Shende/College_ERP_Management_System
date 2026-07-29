@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { menuItems } from "../../utils/menu";
 
 function Sidebar() {
@@ -28,6 +28,7 @@ function Sidebar() {
             </NavLink>
           );
         })}
+        <Link to="/users/add">Add Employee</Link>
       </nav>
     </aside>
   );

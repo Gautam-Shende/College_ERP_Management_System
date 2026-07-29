@@ -62,3 +62,18 @@ export const updateUser = async (id: number, data: any) => {
 
   return response.data;
 };
+
+
+export const updateUserStatus = async (
+  id: number,
+  status: "active" | "inactive"
+) => {
+  const response = await api.patch(
+    `/users/${id}/status`,
+    {
+      status,
+    }
+  );
+
+  return response.data;
+};
