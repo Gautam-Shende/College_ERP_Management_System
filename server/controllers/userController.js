@@ -99,18 +99,6 @@ const createUser = async (req, res) => {
     let { name, email, password, role, department_id, designation, phone } =
       req.body;
 
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, email, password and role are required",
-      });
-    }
-
-    name = name.trim();
-    email = email.trim().toLowerCase();
-    designation = designation?.trim() || "";
-    phone = phone?.trim() || "";
-
     const existingUser = await User.getUserByEmail(email);
 
     if (existingUser) {

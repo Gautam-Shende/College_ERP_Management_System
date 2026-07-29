@@ -1,6 +1,7 @@
 
+
 const validateStudent = (req, res, next) => {
-  const { name, email, course, city } = req.body;
+  const { name, email, course_id, city } = req.body;
 
   if (!name || !email || !course_id || !city) {
     return res.status(400).json({
@@ -9,16 +10,32 @@ const validateStudent = (req, res, next) => {
     });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({
-      success: false,
-      message: "Please enter a valid email",
-    });
-  }
+  req.body.name = name.trim();
+  req.body.email = email.trim().toLowerCase();
+  req.body.city = city.trim();
 
   next();
 };
 
-module.exports = validateStudent;
+const validateEmployee = (req, res, next) => {
+  const { name, email, password, role, designation, phone } = req.body;
+
+  if (!name || !email || !password || !role || !designation || !phone) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
+
+  req.body.name = name.trim();
+  req.body.email = email.trim().toLowerCase();
+  req.body.designation = designation.trim();
+  req.body.phone = phone.trim();
+
+  next();
+};
+
+module.exports = {
+  validateStudent,
+  validateEmployee,
+};

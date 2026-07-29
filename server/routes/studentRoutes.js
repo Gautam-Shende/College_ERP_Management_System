@@ -12,6 +12,7 @@ const {
 
 const authMiddleware = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorize");
+const { validateStudent } = require("../middleware/validation");
 
 router.get(
   "/",
@@ -31,6 +32,7 @@ router.post(
   "/",
   authMiddleware,
   authorize("principal", "admission_staff"),
+  validateStudent,
   createStudent,
 );
 
@@ -38,9 +40,9 @@ router.put(
   "/:id",
   authMiddleware,
   authorize("principal", "hod", "admission_staff"),
+  validateStudent,
   updateStudent,
 );
 
 router.delete("/:id", authMiddleware, authorize("principal"), deleteStudent);
-
 module.exports = router;
