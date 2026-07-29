@@ -1,5 +1,3 @@
-
-
 const validateStudent = (req, res, next) => {
   const { name, email, course_id, city } = req.body;
 
@@ -35,7 +33,30 @@ const validateEmployee = (req, res, next) => {
   next();
 };
 
+const validateCourse = (req, res, next) => {
+  const { course_name, department_id } = req.body;
+
+  if (!course_name || !course_name.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Course name is required",
+    });
+  }
+
+  if (!department_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Department is required",
+    });
+  }
+
+  req.body.course_name = course_name.trim();
+
+  next();
+};
+
 module.exports = {
   validateStudent,
   validateEmployee,
+  validateCourse
 };
