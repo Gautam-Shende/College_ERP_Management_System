@@ -65,8 +65,20 @@ const getUserById = async (id) => {
 
 const createUser = async (userData) => {
   const sql = `
-        INSERT INTO users(name,email,password,role)
-        VALUES(?,?,?,?)
+        INSERT INTO users
+        (
+            name,
+            email,
+            password,
+            role,
+            department_id,
+            designation,
+            phone
+        )
+        VALUES
+        (
+            ?,?,?,?,?,?,?
+        )
     `;
 
   const [result] = await db.query(sql, [
@@ -74,9 +86,26 @@ const createUser = async (userData) => {
     userData.email,
     userData.password,
     userData.role,
+    userData.department_id,
+    userData.designation,
+    userData.phone,
   ]);
 
   return result;
+};
+
+const getUserByEmail = async (email) => {
+
+    const sql = `
+        SELECT *
+        FROM users
+        WHERE email=?
+    `;
+
+    const [rows] = await db.query(sql,[email]);
+
+    return rows[0];
+
 };
 
 module.exports = {
@@ -84,5 +113,6 @@ module.exports = {
   getUsers,
   getAllUsers,
   getUserById,
+  getUserByEmail,
   findUserByEmail,
 };

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await userModel.getAllUsers();
+    const users = await User.getAllUsers();
 
     res.status(200).json({
       success: true,
@@ -42,6 +42,58 @@ const getUserById = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      role,
+      department_id,
+      designation,
+      phone,
+    } = req.body;
+
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({
+        message: "All required fields are mandatory",
+      });
+    }
+
+    const existingUser = await User.getUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email already exists",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await User.createUser({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      department_id,
+      designation,
+      phone,
+    });
+
+    res.status(201).json({
+      message: "Employee created successfully",
+
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
+    });
   }
 };
 
@@ -127,6 +179,7 @@ const loginUser = async (req, res, next) => {
 module.exports = {
   registerUser,
   getUsers,
+  createUser,
   getUserById,
   loginUser,
 };
