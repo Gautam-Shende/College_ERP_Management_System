@@ -36,14 +36,15 @@ const getCourseById = async (id) => {
   return rows[0];
 };
 
-const getCourseByName = async (courseName) => {
+const getCourseByName = async (courseName, departmentId) => {
   const sql = `
     SELECT *
     FROM courses
     WHERE course_name = ?
+      AND department_id = ?
   `;
 
-  const [rows] = await db.query(sql, [courseName]);
+  const [rows] = await db.query(sql, [courseName, departmentId]);
 
   return rows[0];
 };
@@ -98,6 +99,18 @@ const deleteCourse = async (id) => {
   return result;
 };
 
+const departmentExists = async (departmentId) => {
+  const sql = `
+    SELECT id
+    FROM departments
+    WHERE id = ?
+  `;
+
+  const [rows] = await db.query(sql, [departmentId]);
+
+  return rows[0];
+};
+
 module.exports = {
   getCourses,
   getCourseById,
@@ -105,4 +118,5 @@ module.exports = {
   createCourse,
   updateCourse,
   deleteCourse,
+  departmentExists
 };

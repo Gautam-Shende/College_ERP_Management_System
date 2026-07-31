@@ -303,7 +303,7 @@ const updateUserStatus = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { status } = req.body;
+    const { status } = req.body || {};
 
     if (!status) {
       return res.status(400).json({
@@ -348,7 +348,6 @@ const updateUserStatus = async (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  
   res.status(200).json({
     success: true,
 
@@ -363,5 +362,5 @@ module.exports = {
   getUserById,
   loginUser,
   updateUserStatus,
-  getCurrentUser
+  getCurrentUser,
 };

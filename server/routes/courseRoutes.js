@@ -16,24 +16,14 @@ const {
   validateCourse,
 } = require("../middleware/validation");
 
-router.get(
-  "/",
-  authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
-  getCourses,
-);
+router.get("/", authMiddleware, authorize("principal"), getCourses);
 
-router.get(
-  "/:id",
-  authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
-  getCourseById,
-);
+router.get("/:id", authMiddleware, authorize("principal"), getCourseById);
 
 router.post("/", authMiddleware, authorize("principal"), validateCourse, createCourse);
 
-router.put("/:id", authMiddleware, authorize("principal"),validateCourse, updateCourse);
+router.put("/:id", authMiddleware, authorize("principal"), validateCourse, updateCourse);
 
-router.delete("/:id", authMiddleware, authorize("principal"),validateCourse, deleteCourse);
+router.delete("/:id", authMiddleware, authorize("principal"), deleteCourse);
 
 module.exports = router;

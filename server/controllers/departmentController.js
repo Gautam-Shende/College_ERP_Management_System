@@ -111,6 +111,7 @@ const updateDepartment = async (req, res) => {
     const existingDepartment =
       await Department.getDepartmentByName(departmentName);
 
+
     if (existingDepartment && existingDepartment.id != id) {
       return res.status(409).json({
         success: false,
