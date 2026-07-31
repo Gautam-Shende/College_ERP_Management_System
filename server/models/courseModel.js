@@ -88,6 +88,19 @@ const updateCourse = async (id, courseData) => {
   return result;
 };
 
+const hasStudents = async (courseId) => {
+  const sql = `
+    SELECT id
+    FROM students
+    WHERE course_id = ?
+    LIMIT 1
+  `;
+
+  const [rows] = await db.query(sql, [courseId]);
+
+  return rows.length > 0;
+};
+
 const deleteCourse = async (id) => {
   const sql = `
     DELETE FROM courses
@@ -117,6 +130,7 @@ module.exports = {
   getCourseByName,
   createCourse,
   updateCourse,
+  hasStudents,
   deleteCourse,
   departmentExists
 };

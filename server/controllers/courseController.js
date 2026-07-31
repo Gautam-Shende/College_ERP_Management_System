@@ -175,7 +175,30 @@ const deleteCourse = async (req, res) => {
 
     const course = await Course.getCourseById(id);
 
-    await Course.deleteCourse(id);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    const assigned = await Course.hasStudents(id);
+
+    if (assigned) {
+      return res.status(409).json({
+        success: false,
+        message: "Cannot delete course. Students are assigned to this course.",
+      });
+    }
+
+    const result = await Course.deleteCourse(id);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
 
     return res.status(200).json({
       success: true,
