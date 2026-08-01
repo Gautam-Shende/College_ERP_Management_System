@@ -1,38 +1,17 @@
 const db = require("../config/db");
 
-const getDashboardStats = async () => {
-  const [[students]] = await db.query(
-    "SELECT COUNT(*) AS totalStudents FROM students",
-  );
-
-  const [[courses]] = await db.query(
-    "SELECT COUNT(*) AS totalCourses FROM courses",
-  );
-
-  const [[cities]] = await db.query(
-    "SELECT COUNT(DISTINCT city) AS totalCities FROM students",
-  );
-
-  const [[users]] = await db.query("SELECT COUNT(*) AS totalUsers FROM users");
-
-  return {
-    totalStudents: students.totalStudents,
-    totalCourses: courses.totalCourses,
-    totalCities: cities.totalCities,
-    totalUsers: users.totalUsers,
-  };
-};
-
 const getRecentStudents = async () => {
   const sql = `
     SELECT
-      id,
-      name,
-      email,
-      course,
-      city
-    FROM students
-    ORDER BY id DESC
+      s.id,
+      s.name,
+      s.email,
+      c.course_name AS course,
+      s.city
+    FROM students s
+    INNER JOIN courses c
+      ON s.course_id = c.id
+    ORDER BY s.id DESC
     LIMIT 5
   `;
 
@@ -74,14 +53,18 @@ const getDashboardSummary = async () => {
 };
 
 const getCourseStats = async () => {
-  const [rows] = await db.query(`
+  const sql = `
     SELECT
-      course,
-      COUNT(*) AS total
-    FROM students
-    GROUP BY course
+      c.course_name AS course,
+      COUNT(s.id) AS total
+    FROM courses c
+    LEFT JOIN students s
+      ON c.id = s.course_id
+    GROUP BY c.id, c.course_name
     ORDER BY total DESC
-  `);
+  `;
+
+  const [rows] = await db.query(sql);
 
   return rows;
 };
@@ -100,9 +83,8 @@ const getCityStats = async () => {
 };
 
 module.exports = {
-  getDashboardStats,
   getRecentStudents,
   getDashboardSummary,
   getCityStats,
-  getCourseStats
+  getCourseStats,
 };

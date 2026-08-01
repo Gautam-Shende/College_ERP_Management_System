@@ -24,6 +24,13 @@ const COLORS = [
 ];
 
 function CityChart({ data }: Props) {
+  if (!data.length) {
+    return (
+      <div className="rounded-xl bg-white p-5 shadow flex items-center justify-center h-[380px]">
+        <p className="text-gray-500">No city data available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-xl bg-white p-5 shadow">

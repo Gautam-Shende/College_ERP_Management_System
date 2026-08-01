@@ -1,10 +1,9 @@
 import useDashboard from "../../hooks/useDashboard";
-import SummaryCards from "../../components/dashboard/StatCard";
+import SummaryCards from "../../components/dashboard/SummaryCards";
 import CourseChart from "../../components/dashboard/CourseChart";
 import CityChart from "../../components/dashboard/Citychart";
 import RecentStudents from "../../components/dashboard/RecentStudentsTable";
 import DashboardSkeleton from "../../components/dashboard/DashboardSkeleton";
-
 
 function Dashboard() {
   const { dashboard, loading, error } = useDashboard();
@@ -26,7 +25,6 @@ function Dashboard() {
       <SummaryCards summary={dashboard.summary} />
       <div className="grid gap-6 lg:grid-cols-2">
         <CourseChart data={dashboard.courseStats} />
-
         <CityChart data={dashboard.cityStats} />
         <RecentStudents students={dashboard.recentStudents} />
       </div>

@@ -85,32 +85,30 @@ const getStudents = async (page, limit, search, sortBy, order) => {
 
 const getStudentsCount = async (search) => {
   let sql = `
-      SELECT COUNT(*) AS total
+    SELECT COUNT(*) AS total
+    FROM students s
 
-      FROM students s
+    LEFT JOIN courses c
+      ON s.course_id = c.id
 
-      LEFT JOIN courses c
+    LEFT JOIN departments d
+      ON c.department_id = d.id
 
-       LEFT JOIN departments d
-
-        WHERE 1 = 1
+    WHERE 1 = 1
   `;
 
   const params = [];
 
   if (search) {
     sql += `
-      WHERE
-
-      s.name LIKE ?
-
-      OR s.email LIKE ?
-
-      OR c.course_name LIKE ?
-
-      OR d.department_name LIKE ?
-
-      OR s.city LIKE ?
+      AND
+      (
+        s.name LIKE ?
+        OR s.email LIKE ?
+        OR c.course_name LIKE ?
+        OR d.department_name LIKE ?
+        OR s.city LIKE ?
+      )
     `;
 
     params.push(

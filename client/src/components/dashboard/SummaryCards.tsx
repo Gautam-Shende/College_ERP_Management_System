@@ -11,24 +11,28 @@ function SummaryCards({ summary }: Props) {
     {
       title: "Students",
       value: summary.totalStudents,
+      subtitle: "Registered Students",
       icon: GraduationCap,
       color: "bg-blue-500",
     },
     {
       title: "Courses",
       value: summary.totalCourses,
+      subtitle: "Available Courses",
       icon: BookOpen,
       color: "bg-green-500",
     },
     {
       title: "Cities",
       value: summary.totalCities,
+      subtitle: "Student Locations",
       icon: MapPin,
       color: "bg-orange-500",
     },
     {
       title: "Users",
       value: summary.totalUsers,
+      subtitle: "System Employees",
       icon: Users,
       color: "bg-purple-500",
     },
@@ -46,8 +50,7 @@ function SummaryCards({ summary }: Props) {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">{card.title}</p>
-
+                <p className="mt-1 text-xs text-gray-400">{card.subtitle}</p>
                 <h2 className="mt-2 text-3xl font-bold">{card.value}</h2>
               </div>
 
