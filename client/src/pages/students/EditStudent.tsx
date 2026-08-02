@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import toast from "react-hot-toast";
 
-import StudentForm from "../../components/students/StudentFrom";
+import StudentForm from "../../components/students/StudentForm";
 
 import { getStudentById, updateStudent } from "../../services/studentService";
 
@@ -78,6 +78,7 @@ function EditStudent() {
         defaultValues={student}
         onSubmit={handleUpdate}
         loading={saving}
+        buttonText="Update Student"
       />
     </div>
   );

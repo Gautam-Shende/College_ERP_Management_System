@@ -1,6 +1,7 @@
 import StudentTable from "../../components/students/StudentTable";
 import Pagination from "../../components/common/Pagination";
 import useStudents from "../../hooks/useStudents";
+import { Link } from "react-router-dom";
 
 function StudentList() {
   const {
@@ -46,8 +47,16 @@ function StudentList() {
 
   return (
     <div>
-      <h1 className="mb-6 text-3xl font-bold">Students</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Students</h1>
 
+        <Link
+          to="/students/add"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
+          + Add Student
+        </Link>
+      </div>
       {/* Search + Filters */}
 
       <div className="mb-5 flex flex-wrap gap-4">

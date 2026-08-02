@@ -1,6 +1,14 @@
 const db = require("../config/db");
 
-const getStudents = async (page, limit, search, sortBy, order) => {
+const getStudents = async (
+  page,
+  limit,
+  search,
+  sortBy,
+  order,
+  course,
+  city,
+) => {
   const offset = (page - 1) * limit;
 
   const sortColumns = {
@@ -68,6 +76,22 @@ const getStudents = async (page, limit, search, sortBy, order) => {
     );
   }
 
+  if (course) {
+    sql += `
+    AND c.course_name = ?
+  `;
+
+    params.push(course);
+  }
+
+  if (city) {
+    sql += `
+    AND s.city = ?
+  `;
+
+    params.push(city);
+  }
+
   sql += `
       ORDER BY ${sortColumn} ${sortOrder}
 
@@ -83,19 +107,20 @@ const getStudents = async (page, limit, search, sortBy, order) => {
   return rows;
 };
 
-const getStudentsCount = async (search) => {
+const getStudentsCount = async (ssearch, course, city) => {
   let sql = `
-    SELECT COUNT(*) AS total
-    FROM students s
+SELECT COUNT(*) AS total
 
-    LEFT JOIN courses c
-      ON s.course_id = c.id
+FROM students s
 
-    LEFT JOIN departments d
-      ON c.department_id = d.id
+LEFT JOIN courses c
+ON s.course_id = c.id
 
-    WHERE 1 = 1
-  `;
+LEFT JOIN departments d
+ON c.department_id = d.id
+
+WHERE 1=1
+`;
 
   const params = [];
 
@@ -118,6 +143,22 @@ const getStudentsCount = async (search) => {
       `%${search}%`,
       `%${search}%`,
     );
+  }
+
+  if (course) {
+    sql += `
+    AND c.course_name = ?
+  `;
+
+    params.push(course);
+  }
+
+  if (city) {
+    sql += `
+    AND s.city = ?
+  `;
+
+    params.push(city);
   }
 
   const [[result]] = await db.query(sql, params);

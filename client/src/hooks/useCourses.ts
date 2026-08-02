@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { getCourses } from "../services/courseService";
 
 function useCourses() {
@@ -10,9 +9,15 @@ function useCourses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        console.log("Fetching Courses...");
+
         const data = await getCourses();
 
+        console.log("Courses Response:", data);
+
         setCourses(data);
+      } catch (err) {
+        console.error("Course Error:", err);
       } finally {
         setLoading(false);
       }
@@ -23,7 +28,6 @@ function useCourses() {
 
   return {
     courses,
-
     loading,
   };
 }
