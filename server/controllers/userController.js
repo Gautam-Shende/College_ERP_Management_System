@@ -2,6 +2,14 @@ const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
+// All status codes from this file
+const HTTP_STATUS = require("../constants/httpStatus");
+// All messages error from this file
+const MESSAGES = require("../constants/messages");
+// ALL Roles from this file 
+const ROLES = require("../constants/roles")
+
+
 const getUsers = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -30,28 +38,24 @@ const getUsers = async (req, res) => {
 
     const totalRecords = await User.getUsersCount(search, role, department_id);
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-
+      message: MESSAGES.USER.FETCHED,
       data: users,
 
       pagination: {
         currentPage: page,
-
         totalPages: Math.ceil(totalRecords / limit),
-
         totalRecords,
-
         limit,
       },
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-
-      message: "Failed to fetch users",
+      message: MESSAGES.USER.FAILED,
     });
   }
 };
@@ -61,9 +65,8 @@ const getUserById = async (req, res) => {
     const id = Number(req.params.id);
 
     if (Number.isNaN(id)) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-
         message: "Invalid user id",
       });
     }
@@ -71,25 +74,23 @@ const getUserById = async (req, res) => {
     const user = await User.getUserById(id);
 
     if (!user) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-
-        message: "User not found",
+        message: MESSAGES.USER.NOT_FOUND,
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-
+      message: MESSAGES.USER.FETCHED,
       data: user,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -102,37 +103,37 @@ const createUser = async (req, res) => {
     const existingUser = await User.getUserByEmail(email);
 
     if (existingUser) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Email already exists",
+        message: MESSAGES.USER.EMAIL_EXISTS,
       });
     }
 
-    const allowedRoles = ["teacher", "hod", "admission_staff"];
+    const allowedRoles = [ROLES.TEACHER, ROLES.HOD, ROLES.ADMISSION_STAFF];
 
     if (!allowedRoles.includes(role)) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Invalid role",
+        message: MESSAGES.USER.INVALID_ROLE,
       });
     }
 
-    if ((role === "teacher" || role === "hod") && !department_id) {
-      return res.status(400).json({
+    if ((role === ROLES.TEACHER || role === ROLES.HOD) && !department_id) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Department is required",
+        message: MESSAGES.DEPARTMENT.DEPARTMENT_REQUI,
       });
     }
 
     if (!designation) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Designation is required",
       });
     }
 
     if (!/^\d{10}$/.test(phone)) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Invalid phone number",
       });
@@ -150,19 +151,19 @@ const createUser = async (req, res) => {
       phone,
     });
 
-    return res.status(201).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      message: "Employee created successfully",
+      message: MESSAGES.USER.CREATED,
       data: {
         id: result.insertId,
       },
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -172,7 +173,7 @@ const registerUser = async (req, res) => {
     let { name, email, password, role } = req.body;
 
     if (!name || !email || !password || !role) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Name, email and password are required",
       });
@@ -182,7 +183,7 @@ const registerUser = async (req, res) => {
     email = email.trim().toLowerCase();
 
     if (password.length < 6) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Password must be at least 6 characters",
       });
@@ -191,9 +192,9 @@ const registerUser = async (req, res) => {
     const existingUser = await User.getUserByEmail(email);
 
     if (existingUser) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Email already exists",
+        message: MESSAGES.USER.EMAIL_EXISTS,
       });
     }
 
@@ -209,19 +210,19 @@ const registerUser = async (req, res) => {
       phone: null,
     });
 
-    return res.status(201).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      message: "Registration successful",
+      message: MESSAGES.USER.REGISTERED,
       data: {
         id: result.insertId,
       },
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -231,9 +232,9 @@ const loginUser = async (req, res) => {
     let { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Email and password are required",
+        message: MESSAGES.COMMON.EMAIL_PASS_REQUIRED,
       });
     }
 
@@ -242,25 +243,25 @@ const loginUser = async (req, res) => {
     const user = await User.getUserByEmail(email);
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         success: false,
-        message: "Invalid credentials",
+        message: MESSAGES.USER.INVALID_CREDENTIALS,
       });
     }
 
     if (user.status !== "active") {
-      return res.status(403).json({
+      return res.status(HTTP_STATUS.FORBIDDEN).json({
         success: false,
-        message: "Your account is inactive. Contact Principal.",
+        message: MESSAGES.USER.INACTIVE,
       });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         success: false,
-        message: "Invalid credentials",
+        message: MESSAGES.USER.INVALID_CREDENTIALS,
       });
     }
 
@@ -276,9 +277,9 @@ const loginUser = async (req, res) => {
       },
     );
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Login successful",
+      message: MESSAGES.USER.LOGIN,
       token,
       user: {
         id: user.id,
@@ -290,11 +291,11 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -306,7 +307,7 @@ const updateUserStatus = async (req, res) => {
     const { status } = req.body || {};
 
     if (!status) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Status is required",
       });
@@ -315,7 +316,7 @@ const updateUserStatus = async (req, res) => {
     const allowedStatus = ["active", "inactive"];
 
     if (!allowedStatus.includes(status)) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Invalid status",
       });
@@ -324,13 +325,13 @@ const updateUserStatus = async (req, res) => {
     const result = await User.updateUserStatus(id, status);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Employee not found",
+        message: MESSAGES.USER.NOT_FOUND,
       });
     }
 
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       success: true,
       message:
         status === "active"
@@ -338,11 +339,11 @@ const updateUserStatus = async (req, res) => {
           : "Employee deactivated successfully",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
-    res.status(500).json({
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -355,9 +356,9 @@ const updateUser = async (req, res) => {
 
     const user = await User.getUserById(id);
     if (!user) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "User not found",
+        message: MESSAGES.USER.NOT_FOUND,
       });
     }
 
@@ -369,13 +370,14 @@ const updateUser = async (req, res) => {
       phone: phone?.trim() || user.phone,
     });
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Employee updated successfully",
+      message: MESSAGES.USER.UPDATED,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    // console.error(error);
+
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Failed to update employee",
     });
@@ -389,27 +391,27 @@ const deleteUser = async (req, res) => {
 
     const user = await User.getUserById(id);
     if (!user) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "User not found",
+        message: MESSAGES.USER.NOT_FOUND,
       });
     }
 
     const result = await User.deleteUser(id);
     if (result.affectedRows === 0) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
         message: "Failed to delete user",
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Employee deleted successfully",
+      message: MESSAGES.USER.DELETED,
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
+    // console.error(error);
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Failed to delete employee",
     });
@@ -417,7 +419,7 @@ const deleteUser = async (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  res.status(200).json({
+  res.status(HTTP_STATUS.OK).json({
     success: true,
     data: req.user,
   });
