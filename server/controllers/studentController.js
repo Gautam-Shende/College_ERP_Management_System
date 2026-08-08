@@ -29,23 +29,22 @@ const getStudents = async (req, res, next) => {
     );
 
     const total = await Student.getStudentsCount(search, course, city);
-    console.log("HTTP STATUS:", HTTP_STATUS.OK);
-    console.log("MESSAGE:", MESSAGES.STUDENT.FETCHED);
-    
+
     res.status(HTTP_STATUS.OK).json({
       success: true,
       message: MESSAGES.STUDENT.FETCHED,
       data: students,
 
+      // pagination for better page loading on UI
       pagination: {
         currentPage: page,
+        // use Math.ciel for Calculate total pages and round up for remaining students
         totalPages: Math.ceil(total / limit),
         totalStudents: total,
         limit,
       },
     });
 
-    console.log(MESSAGES.FETCHED);
   } catch (err) {
     next(err);
   }
@@ -58,13 +57,13 @@ const getStudentById = async (req, res, next) => {
     const student = await Student.getStudentById(id);
 
     if (!student) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Student Not Found",
+        message: MESSAGES.STUDENT.NOT_FOUND,
       });
     }
 
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       success: true,
       data: student,
     });
@@ -88,9 +87,9 @@ const createStudent = async (req, res, next) => {
     const existingStudent = await Student.getStudentByEmail(normalizedEmail);
 
     if (existingStudent) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Email already exists",
+        message: MESSAGES.STUDENT.EMAIL_EXISTS,
       });
     }
 
@@ -101,9 +100,9 @@ const createStudent = async (req, res, next) => {
       city: city.trim(),
     });
 
-    res.status(201).json({
+    res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      message: "Student Added Successfully",
+      message: MESSAGES.STUDENT.CREATED,
       studentId: result.insertId,
     });
   } catch (err) {
@@ -125,15 +124,15 @@ const updateStudent = async (req, res, next) => {
     });
 
     if (!student) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Student Not Found",
+        message: MESSAGES.STUDENT.NOT_FOUND,
       });
     }
 
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Student Updated Successfully",
+      message: MESSAGES.STUDENT.UPDATED,
     });
   } catch (err) {
     next(err);
@@ -154,12 +153,12 @@ const deleteStudent = async (req, res, next) => {
       });
     }
 
-    // Execute deletion from database
+    //  deletion from database
     await Student.deleteStudent(id);
 
-    res.status(200).json({
+    res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Student Deleted Successfully",
+      message: MESSAGES.STUDENT.DELETED,
     });
   } catch (err) {
     next(err);

@@ -11,12 +11,12 @@
   },
 
   STUDENT: {
-    NOT_FOUND: "Student not found",
-    EMAIL_EXISTS: "Email already exists",
+    NOT_FOUND: "Student not found..",
+    EMAIL_EXISTS: "Email already exists..",
     FETCHED: "Student fetched successfully....",
-    CREATED: "Student added successfully",
-    UPDATED: "Student updated successfully",
-    DELETED: "Student deleted successfully",
+    CREATED: "Student added successfully....",
+    UPDATED: "Student updated successfully..",
+    DELETED: "Student deleted successfully..",
   },
 
   COURSE: {
