@@ -1,5 +1,10 @@
 const Student = require("../models/studentModel");
 
+// All status codes from this file
+const HTTP_STATUS = require("../constants/httpStatus");
+// All messages error from this file
+const MESSAGES = require("../constants/messages");
+
 const getStudents = async (req, res, next) => {
   try {
     const page = Number(req.query.page) || 1;
@@ -24,10 +29,12 @@ const getStudents = async (req, res, next) => {
     );
 
     const total = await Student.getStudentsCount(search, course, city);
-
-    res.status(200).json({
+    console.log("HTTP STATUS:", HTTP_STATUS.OK);
+    console.log("MESSAGE:", MESSAGES.STUDENT.FETCHED);
+    
+    res.status(HTTP_STATUS.OK).json({
       success: true,
-
+      message: MESSAGES.STUDENT.FETCHED,
       data: students,
 
       pagination: {
@@ -37,6 +44,8 @@ const getStudents = async (req, res, next) => {
         limit,
       },
     });
+
+    console.log(MESSAGES.FETCHED);
   } catch (err) {
     next(err);
   }
