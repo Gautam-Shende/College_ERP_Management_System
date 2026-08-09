@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const User = require("../models/userModel")
+
+// ALL Status Codes form here
+const HTTP_STATUS = require("../constants/httpStatus")
+// ALl error messages form here
+const MESSAGES = require("../constants/messages")
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -7,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Authorization Header Check
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Access denied. Token missing.",
       });
@@ -23,17 +28,17 @@ const authMiddleware = async (req, res, next) => {
     const user = await User.getUserById(decoded.id);
 
     if (!user) {
-      return res.status(401).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "User not found.",
+        message: MESSAGES.COMMON.USER_NOT_FOUND,
       });
     }
 
     // Check Active Status
     if (user.status !== "active") {
-      return res.status(403).json({
+      return res.status(HTTP_STATUS.FORBIDDEN).json({
         success: false,
-        message: "Your account is inactive.",
+        message: MESSAGES.USER.INACTIVE,
       });
     }
 
@@ -48,11 +53,11 @@ const authMiddleware = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(401).json({
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
       success: false,
-      message: "Invalid or expired token.",
+      message: MESSAGES.COMMON.INVALID_TOKEN,
     });
   }
 };

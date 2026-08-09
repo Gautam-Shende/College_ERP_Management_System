@@ -76,12 +76,6 @@ const createStudent = async (req, res, next) => {
   try {
     const { name, email, course_id, city } = req.body;
 
-    if (!name || !email || !course_id || !city) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
     const normalizedEmail = email.trim().toLowerCase();
 
     const existingStudent = await Student.getStudentByEmail(normalizedEmail);

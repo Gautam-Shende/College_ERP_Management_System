@@ -1,10 +1,14 @@
+const HTTP_STATUS = require("../constants/httpStatus");
+const MESSAGES = require("../constants/messages");
+
+
 const validateStudent = (req, res, next) => {
   const { name, email, course_id, city } = req.body;
 
   if (!name || !email || !course_id || !city) {
-    return res.status(400).json({
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "All fields are required",
+      message: MESSAGES.COMMON.ALL_FIELDS_REQUIRED,
     });
   }
 
@@ -19,9 +23,9 @@ const validateEmployee = (req, res, next) => {
   const { name, email, password, role, designation, phone } = req.body;
 
   if (!name || !email || !password || !role || !designation || !phone) {
-    return res.status(400).json({
+     return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "All fields are required",
+      message: MESSAGES.COMMON.ALL_FIELDS_REQUIRED,
     });
   }
 
@@ -37,16 +41,16 @@ const validateCourse = (req, res, next) => {
   const { course_name, department_id } = req.body;
 
   if (!course_name || !course_name.trim()) {
-    return res.status(400).json({
+     return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "Course name is required",
+      message: MESSAGES.COURSE.COURSE_REQ,
     });
   }
 
   if (!department_id) {
-    return res.status(400).json({
+     return res.status(HTTP_STATUS.BAD_REQUEST).json({
       success: false,
-      message: "Department is required",
+      message: MESSAGES.DEPARTMENT.DEPARTMENT_REQUI,
     });
   }
 

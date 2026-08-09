@@ -268,6 +268,7 @@ module.exports = {
   getStudents,
   getStudentsCount,
   getStudentById,
+  getStudentByEmail,
   createStudent,
   updateStudent,
   deleteStudent,
