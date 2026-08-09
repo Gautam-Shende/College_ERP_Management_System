@@ -167,7 +167,7 @@ npm run dev
 
 ---
 
-🔐 Security Notes
+#🔐 Security Notes
 User passwords are securely hashed using bcrypt before being saved in the database. Plain-text passwords are never stored.
 
 • JWT tokens are verified on every protected request. The system also checks whether the related user account is still active.
@@ -176,7 +176,8 @@ User passwords are securely hashed using bcrypt before being saved in the databa
 
 • Environment files such as .env, which may contain sensitive information, are excluded from version control using .gitignore.
 
-🧠 Design Decisions
+#🧠 Design Decisions
+
 • MySQL instead of MongoDB: MySQL was selected because the system contains clearly related data. For example, each student belongs to a specific course, and each course belongs to a department. A relational database with foreign-key constraints was therefore a better fit than a document-based database.
 
 • Status flags instead of permanently deleting users: User accounts are deactivated rather than deleted permanently. This preserves historical information, such as which staff member created a particular student record, even if that staff member later leaves the organization.
@@ -184,9 +185,4 @@ User passwords are securely hashed using bcrypt before being saved in the databa
 • Middleware-based authorization: Authorization logic is handled through centralized middleware instead of being repeated inside individual controllers. This keeps the access rules consistent and easier to maintain across all five modules.
 ---
 
-## 🚧 Possible Improvements
 
-- Add automated tests (unit tests for controllers/models, integration tests for routes)
-- Add refresh tokens instead of a single long-lived JWT
-- Add audit logging for sensitive actions (staff creation, department deletion)
-- Add attendance and fee management modules
