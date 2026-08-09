@@ -1,19 +1,24 @@
 const Course = require("../models/courseModel");
 
+const HTTP_STATUS = require("../constants/httpStatus");
+const MESSAGES = require("../constants/messages");
+
+
 const getCourses = async (req, res) => {
   try {
     const courses = await Course.getCourses();
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
+      message: "ALL Courses are fetched...", 
       data: courses,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -25,22 +30,22 @@ const getCourseById = async (req, res) => {
     const course = await Course.getCourseById(id);
 
     if (!course) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: MESSAGES.COURSE.NOT_FOUND,
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
       data: course,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -52,7 +57,7 @@ const createCourse = async (req, res) => {
     if (!course_name || !department_id) {
       return res.status(400).json({
         success: false,
-        message: "Course name and department are required",
+        message: MESSAGES.COURSE.COURSE_REQ,
       });
     }
 
@@ -61,9 +66,9 @@ const createCourse = async (req, res) => {
     const department = await Course.departmentExists(department_id);
 
     if (!department) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Department not found",
+        message: MESSAGES.DEPARTMENT.NOT_FOUND,
       });
     }
 
@@ -73,9 +78,9 @@ const createCourse = async (req, res) => {
     );
 
     if (existingCourse) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Course already exists in this department",
+        message: MESSAGES.COURSE.ALREADY_EXISTS,
       });
     }
 
@@ -84,17 +89,17 @@ const createCourse = async (req, res) => {
       department_id,
     });
 
-    return res.status(201).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      message: "Course created successfully",
+      message: MESSAGES.COURSE.CREATED,
       courseId: result.insertId,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -105,27 +110,27 @@ const updateCourse = async (req, res) => {
     const { course_name, department_id } = req.body;
 
     if (!course_name || !department_id) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Course name and department are required",
+        message: MESSAGES.COURSE.COURSE_REQ,
       });
     }
 
     const course = await Course.getCourseById(id);
 
     if (!course) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: MESSAGES.COURSE.NOT_FOUND,
       });
     }
 
     const department = await Course.departmentExists(department_id);
 
     if (!department) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Department not found",
+        message: MESSAGES.DEPARTMENT.NOT_FOUND,
       });
     }
 
@@ -137,7 +142,7 @@ const updateCourse = async (req, res) => {
     );
 
     if (existingCourse && existingCourse.id !== Number(id)) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
         message: "Course already exists in this department",
       });
@@ -149,22 +154,22 @@ const updateCourse = async (req, res) => {
     });
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: MESSAGES.COURSE.NOT_FOUND,
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Course updated successfully",
+      message: MESSAGES.COURSE.UPDATED,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -176,16 +181,16 @@ const deleteCourse = async (req, res) => {
     const course = await Course.getCourseById(id);
 
     if (!course) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: MESSAGES.COURSE.NOT_FOUND,
       });
     }
 
     const assigned = await Course.hasStudents(id);
 
     if (assigned) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
         message: "Cannot delete course. Students are assigned to this course.",
       });
@@ -194,22 +199,22 @@ const deleteCourse = async (req, res) => {
     const result = await Course.deleteCourse(id);
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: MESSAGES.COURSE.NOT_FOUND,
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Course deleted successfully",
+      message: MESSAGES.COURSE.DELETED,
     });
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };

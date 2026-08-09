@@ -26,6 +26,7 @@
     UPDATED: "Course updated successfully",
     DELETED: "Course deleted successfully",
     ALREADY_EXISTS: "Course already exists in this department",
+    COURSE_REQ: "Course name and department are required",
   },
 
   DEPARTMENT: {
