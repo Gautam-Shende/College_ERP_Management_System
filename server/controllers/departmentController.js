@@ -1,19 +1,24 @@
 const Department = require("../models/departmentModel");
 
+// All status codes from this file
+const HTTP_STATUS = require("../constants/httpStatus");
+// All messages error from this file
+const MESSAGES = require("../constants/messages");
+
 const getDepartments = async (req, res) => {
   try {
     const departments = await Department.getDepartments();
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
       data: departments,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -25,22 +30,22 @@ const getDepartmentById = async (req, res) => {
     const department = await Department.getDepartmentById(id);
 
     if (!department) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Department not found",
+        message: MESSAGES.DEPARTMENT.NOT_FOUND,
       });
     }
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
       data: department,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -50,9 +55,9 @@ const createDepartment = async (req, res) => {
     const { department_name } = req.body;
 
     if (!department_name) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Department name is required",
+        message: MESSAGES.DEPARTMENT.DEPARTMENT_REQUI,
       });
     }
 
@@ -62,25 +67,25 @@ const createDepartment = async (req, res) => {
       await Department.getDepartmentByName(departmentName);
 
     if (existingDepartment) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Department already exists",
+        message: MESSAGES.DEPARTMENT.ALREADY_EXISTS,
       });
     }
 
     const result = await Department.createDepartment(departmentName);
 
-    return res.status(201).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       success: true,
-      message: "Department created successfully",
+      message: MESSAGES.DEPARTMENT.CREATED,
       departmentId: result.insertId,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -91,18 +96,18 @@ const updateDepartment = async (req, res) => {
     const { department_name } = req.body;
 
     if (!department_name) {
-      return res.status(400).json({
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Department name is required",
+        message: MESSAGES.DEPARTMENT.DEPARTMENT_REQUI,
       });
     }
 
     const department = await Department.getDepartmentById(id);
 
     if (!department) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Department not found",
+        message: MESSAGES.DEPARTMENT.NOT_FOUND,
       });
     }
 
@@ -113,24 +118,24 @@ const updateDepartment = async (req, res) => {
 
 
     if (existingDepartment && existingDepartment.id != id) {
-      return res.status(409).json({
+      return res.status(HTTP_STATUS.CONFLICT).json({
         success: false,
-        message: "Department already exists",
+        message: MESSAGES.DEPARTMENT.ALREADY_EXISTS,
       });
     }
 
     await Department.updateDepartment(id, departmentName);
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Department updated successfully",
+      message: MESSAGES.DEPARTMENT.UPDATED,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
@@ -142,24 +147,24 @@ const deleteDepartment = async (req, res) => {
     const department = await Department.getDepartmentById(id);
 
     if (!department) {
-      return res.status(404).json({
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
-        message: "Department not found",
+        message: MESSAGES.DEPARTMENT.NOT_FOUND,
       });
     }
 
     await Department.deleteDepartment(id);
 
-    return res.status(200).json({
+    return res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: "Department deleted successfully",
+      message: MESSAGES.DEPARTMENT.DELETED,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
-    return res.status(500).json({
+    return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server Error",
+      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
     });
   }
 };
