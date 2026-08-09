@@ -79,7 +79,7 @@ Four distinct roles — `principal`, `hod`, `teacher`, `admission_staff` — eac
 College_ERP_Management_System/
 ├── client/                  # React + TypeScript frontend
 │   └── src/
-│       ├── api/             # Axios instance & API calls
+│       ├── api/             # Axios & API calls
 │       ├── components/      # Reusable UI components (by module)
 │       ├── context/         # Auth/global context providers
 │       ├── hooks/           # Custom React hooks
@@ -90,12 +90,12 @@ College_ERP_Management_System/
 │       ├── types/           # TypeScript type definitions
 │       ├── utils/           # Helper functions
 │       └── validations/     # Form validation schemas
-└── server/                  # Express backend
-    ├── config/               # DB connection (MySQL pool)
+└── server/                  # Express backend server
+    ├── config/               # DB connection (MySQL pool) Database
     ├── controllers/          # Request handlers per module
-    ├── middleware/           # auth, authorize, validation, error handling, logging
-    ├── models/                # Raw SQL queries per entity
-    ├── routes/                # Route definitions per module
+    ├── middleware/           # auth, authorize, validation, error handling, logging 
+    ├── models/                # Raw SQL queries per entity , schema architecture
+    ├── routes/                # Route definitions per module, 
     └── server.js              # App entry point
 ```
 
@@ -105,20 +105,20 @@ College_ERP_Management_System/
 
 Base URL: `/api`
 
-| Module | Endpoint | Access |
-|---|---|---|
-| Auth | `POST /users/register`, `POST /users/login` | Public |
-| Users | `GET /users/me` | Any authenticated user |
-| Users | `GET /users`, `POST /users`, `PUT /users/:id`, `PATCH /users/:id/status`, `DELETE /users/:id` | Principal only |
-| Students | `GET /students`, `GET /students/:id` | Principal, HOD, Teacher, Admission staff |
-| Students | `POST /students` | Principal, Admission staff |
-| Students | `PUT /students/:id` | Principal, HOD, Admission staff |
-| Students | `DELETE /students/:id` | Principal only |
-| Courses | `GET /courses`, `GET /courses/:id` | Principal, HOD, Teacher, Admission staff |
-| Courses | `POST /courses`, `PUT /courses/:id`, `DELETE /courses/:id` | Principal, HOD |
-| Departments | `GET /departments`, `GET /departments/:id` | Principal, HOD, Teacher, Admission staff |
-| Departments | `POST /departments`, `PUT /departments/:id`, `DELETE /departments/:id` | Principal only |
-| Dashboard | `GET /dashboard` | Principal, HOD, Teacher, Admission staff |
+| Module      | Endpoint                                                  | Access                                             |
+|-------------|-----------------------------------------------------------|----------------------------------------------------|
+| Auth        | `POST /users/register`, `POST /users/login`               | Public |
+| Users       | `GET /users/me`                                           | Any authenticated user |
+| Users       | `GET /users`, `POST /users`, `PUT /users/:id`, `PATCH /users/:id/status`, `DELETE /users/:id` | Principal only |
+| Students    | `GET /students`, `GET /students/:id`                      | Principal, HOD, Teacher, Admission staff           |
+| Students    | `POST /students`                                          | Principal, Admission staff                         |
+| Students    | `PUT /students/:id`                                       | Principal, HOD, Admission staff                    |
+| Students    | `DELETE /students/:id`                                    | Principal only                                     |
+| Courses     | `GET /courses`, `GET /courses/:id`                        | Principal, HOD, Teacher, Admission staff           |
+| Courses     | `POST /courses`, `PUT /courses/:id`, `DELETE /courses/:id`| Principal, HOD                                     |
+| Departments | `GET /departments`, `GET /departments/:id`                | Principal, HOD, Teacher, Admission staff           |
+| Departments | `POST /departments`, `PUT /departments/:id`, `DELETE /departments/:id` | Principal only                        |
+| Dashboard   | `GET /dashboard`                                          | Principal, HOD, Teacher, Admission staff           |
 
 All protected routes require `Authorization: Bearer <token>` and are additionally gated by role via an `authorize()` middleware.
 
@@ -167,21 +167,21 @@ npm run dev
 
 ---
 
-## 🔐 Security Notes
+🔐 Security Notes
+User passwords are securely hashed using bcrypt before being saved in the database. Plain-text passwords are never stored.
 
-- Passwords are hashed with bcrypt before storage — never stored in plain text
-- JWT tokens are verified on every protected route, and the associated user's active status is re-checked on each request
-- All role checks happen server-side via middleware — the frontend never gates access on its own
-- `.env` files are excluded from version control via `.gitignore`
+• JWT tokens are verified on every protected request. The system also checks whether the related user account is still active.
 
----
+• All role-based access checks are handled on the server through middleware. The frontend does not control or restrict user permissions.
 
-## 🧠 Design Decisions
+• Environment files such as .env, which may contain sensitive information, are excluded from version control using .gitignore.
 
-- **MySQL over MongoDB**: Students, courses, departments, and users have clear relational structure (a student belongs to one course, a course belongs to one department) — a relational database with foreign keys made more sense here than a document store.
-- **Status flags over hard deletes** for user accounts, so historical records (e.g. which staff member created a student record) stay intact even after a staff member leaves.
-- **Middleware-based authorization** rather than checking roles inside each controller, so access rules stay centralized and consistent across all 5 modules.
+🧠 Design Decisions
+• MySQL instead of MongoDB: MySQL was selected because the system contains clearly related data. For example, each student belongs to a specific course, and each course belongs to a department. A relational database with foreign-key constraints was therefore a better fit than a document-based database.
 
+• Status flags instead of permanently deleting users: User accounts are deactivated rather than deleted permanently. This preserves historical information, such as which staff member created a particular student record, even if that staff member later leaves the organization.
+
+• Middleware-based authorization: Authorization logic is handled through centralized middleware instead of being repeated inside individual controllers. This keeps the access rules consistent and easier to maintain across all five modules.
 ---
 
 ## 🚧 Possible Improvements
