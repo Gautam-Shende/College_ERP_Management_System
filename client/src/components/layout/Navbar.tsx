@@ -1,9 +1,16 @@
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-// Top header bar displaying application title, logged in user info, and logout button
-function Navbar() {
+interface Props {
+  onMenuClick: () => void;
+}
+
+// Top header bar: sidebar toggle, application title, logged-in user info,
+// and logout. The toggle button is always visible — on mobile it opens the
+// sidebar drawer, on desktop it collapses the sidebar to icons only (see
+// DashboardLayout, which decides which behaviour applies).
+function Navbar({ onMenuClick }: Props) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
@@ -13,23 +20,34 @@ function Navbar() {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 shadow-sm">
-      <div className="flex items-center gap-3">
-        <h2 className="text-lg font-bold text-slate-800">
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-3 shadow-sm sm:px-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <button
+          onClick={onMenuClick}
+          aria-label="Toggle sidebar"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+        >
+          <Menu size={20} />
+        </button>
+
+        <h2 className="truncate text-base font-bold text-slate-800 sm:text-lg">
           Student Management System
         </h2>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {user && (
-          <div className="hidden sm:flex items-center gap-3 border-r border-slate-200 pr-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold">
+          <div className="hidden items-center gap-3 border-r border-slate-200 pr-4 sm:flex">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-700">
               {user.name ? user.name.charAt(0).toUpperCase() : <User size={18} />}
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-slate-800 leading-none">{user.name}</p>
-              <p className="text-xs text-slate-500 capitalize mt-1">
-                {user.role.replace("_", " ")} {user.designation ? `(${user.designation})` : ""}
+              <p className="text-sm font-semibold leading-none text-slate-800">
+                {user.name}
+              </p>
+              <p className="mt-1 text-xs capitalize text-slate-500">
+                {user.role.replace("_", " ")}{" "}
+                {user.designation ? `(${user.designation})` : ""}
               </p>
             </div>
           </div>
@@ -37,10 +55,10 @@ function Navbar() {
 
         <button
           onClick={handleLogout}
-          className="inline-flex items-center gap-2 rounded-lg bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-100 transition"
+          className="inline-flex items-center gap-2 rounded-lg bg-rose-50 px-2.5 py-2 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 sm:px-3.5"
         >
           <LogOut size={16} />
-          Logout
+          <span className="hidden sm:inline">Logout</span>
         </button>
       </div>
     </header>
