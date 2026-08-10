@@ -19,19 +19,19 @@ const authMiddleware = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorize");
 
 // Public Auth Routes
-router.post("/api/users/register", registerUser);
-router.post("/api/users/login", loginUser);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
 // Authenticated Current User Profile
-router.get("/api/users/me", authMiddleware, getCurrentUser);
+router.get("/me", authMiddleware, getCurrentUser);
 
 // Principal-only User Management Routes (base path is /api/users)
-router.get("/api/users", authMiddleware, authorize("principal"), getUsers);
-router.get("/api/users/:id", authMiddleware, authorize("principal"), getUserById);
-router.post("/api/users/", authMiddleware, authorize("principal"), validateEmployee, createUser);
-router.put("/api/users/:id", authMiddleware, authorize("principal"), updateUser);
-router.patch("/api/users/:id/status", authMiddleware, authorize("principal"), updateUserStatus);
-router.delete("/api/users/:id", authMiddleware, authorize("principal"), deleteUser);
+router.get("/", authMiddleware, authorize("principal"), getUsers);
+router.get("/:id", authMiddleware, authorize("principal"), getUserById);
+router.post("/", authMiddleware, authorize("principal"), validateEmployee, createUser);
+router.put("/:id", authMiddleware, authorize("principal"), updateUser);
+router.patch("/:id/status", authMiddleware, authorize("principal"), updateUserStatus);
+router.delete("/:id", authMiddleware, authorize("principal"), deleteUser);
 
 module.exports = router;
 

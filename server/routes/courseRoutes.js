@@ -25,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/api/courses/:id",
+  "/:id",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getCourseById,
@@ -33,7 +33,7 @@ router.get(
 
 // Write routes (Restricted to Principal and HOD)
 router.post(
-  "/api/courses",
+  "/",
   authMiddleware,
   authorize("principal", "hod"),
   validateCourse,
@@ -41,7 +41,7 @@ router.post(
 );
 
 router.put(
-  "/api/courses/:id",
+  "/:id",
   authMiddleware,
   authorize("principal", "hod"),
   validateCourse,
@@ -49,7 +49,7 @@ router.put(
 );
 
 router.delete(
-  "/api/courses/:id",
+  "/:id",
   authMiddleware,
   authorize("principal", "hod"),
   deleteCourse,

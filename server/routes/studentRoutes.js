@@ -15,21 +15,21 @@ const authorize = require("../middleware/authorize");
 const { validateStudent } = require("../middleware/validation");
 
 router.get(
-  "/api/students",
+  "/",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getStudents,
 );
 
 router.get(
-  "/api/students/:id",
+  "/:id",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getStudentById,
 );
 
 router.post(
-  "/api/students",
+  "/",
   authMiddleware,
   authorize("principal", "admission_staff"),
   validateStudent,
@@ -37,12 +37,12 @@ router.post(
 );
 
 router.put(
-  "/api/students/:id",
+  "/:id",
   authMiddleware,
   authorize("principal", "hod", "admission_staff"),
   validateStudent,
   updateStudent,
 );
 
-router.delete("/api/students/:id", authMiddleware, authorize("principal"), deleteStudent);
+router.delete("/:id", authMiddleware, authorize("principal"), deleteStudent);
 module.exports = router;
