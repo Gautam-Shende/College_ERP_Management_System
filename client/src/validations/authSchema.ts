@@ -27,9 +27,6 @@ export const registerSchema = z.object({
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
 
-  // Deliberately does NOT include "principal" — self-registration should
-  // never be able to create an admin account. Keep this list in sync with
-  // whatever the server's registerUser controller actually allows.
   role: z.enum(["teacher", "hod", "admission_staff"], {
     message: "Please select a role",
   }),
