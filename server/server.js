@@ -9,20 +9,24 @@ const departmentRoutes = require("./routes/departmentRoutes")
 
 const app = express();
 
+const allowedOrigin = process.env.CLIENT_URL;
+
 app.use(
   cors({
-    origin:process.env.CLIENT_URL,
+    origin: allowedOrigin || true,
     credentials: true,
-  })
+  }),
 );
+
+// app.use(cors());
 
 app.use(express.json());
 
-app.use("/api/students", studentRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/courses", courseRoutes);
-app.use("/api/departments", departmentRoutes )
-app.use("/api/dashboard", dashboardRoutes);
+app.use("/", studentRoutes);
+app.use("/", userRoutes);
+app.use("/", courseRoutes);
+app.use("/", departmentRoutes )
+app.use("/", dashboardRoutes);
 
 app.use(errorHandler);
 

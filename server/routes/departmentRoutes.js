@@ -14,7 +14,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorize");
 
 router.get(
-  "/",
+  "/api/departments",
   authMiddleware,
   authorize(
     "principal",
@@ -26,7 +26,7 @@ router.get(
 );
 
 router.get(
-  "/:id",
+  "/api/departments/:id",
   authMiddleware,
   authorize(
     "principal",
@@ -39,7 +39,7 @@ router.get(
 
 
 router.post(
-  "/",
+  "/api/departments",
   authMiddleware,
   authorize("principal"),
   createDepartment
@@ -47,7 +47,7 @@ router.post(
 
 
 router.put(
-  "/:id",
+  "/api/departments/:id",
   authMiddleware,
   authorize("principal"),
   updateDepartment
@@ -55,7 +55,7 @@ router.put(
 
 
 router.delete(
-  "/:id",
+  "/api/departments/:id",
   authMiddleware,
   authorize("principal"),
   deleteDepartment

@@ -18,14 +18,14 @@ const {
 
 // Read routes (Accessible by all staff roles)
 router.get(
-  "/",
+  "/api/courses",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getCourses,
 );
 
 router.get(
-  "/:id",
+  "/api/courses/:id",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getCourseById,
@@ -33,7 +33,7 @@ router.get(
 
 // Write routes (Restricted to Principal and HOD)
 router.post(
-  "/",
+  "/api/courses",
   authMiddleware,
   authorize("principal", "hod"),
   validateCourse,
@@ -41,7 +41,7 @@ router.post(
 );
 
 router.put(
-  "/:id",
+  "/api/courses/:id",
   authMiddleware,
   authorize("principal", "hod"),
   validateCourse,
@@ -49,7 +49,7 @@ router.put(
 );
 
 router.delete(
-  "/:id",
+  "/api/courses/:id",
   authMiddleware,
   authorize("principal", "hod"),
   deleteCourse,

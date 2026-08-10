@@ -7,7 +7,7 @@ const authorize = require("../middleware/authorize");
 
 // Get dashboard summary statistics (protected for all authenticated staff roles)
 router.get(
-  "/",
+  "/api/dashboard",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getDashboard,

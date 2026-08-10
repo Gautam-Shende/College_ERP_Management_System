@@ -189,6 +189,23 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // SECURITY: this route has no authMiddleware in front of it (can't --
+    // the person doesn't have a token yet), so anyone can call it directly
+    // with any JSON body they want, not just through this form. Before this
+    // check, whatever role string was sent got passed straight into
+    // User.createUser() -- a request with role: "principal" silently created
+    // a full admin account. createUser() (used by an already-logged-in
+    // principal to add staff) already guards against this with the same
+    // allowedRoles list; self-registration needs the identical guard.
+    const allowedRoles = [ROLES.TEACHER, ROLES.HOD, ROLES.ADMISSION_STAFF];
+
+    if (!allowedRoles.includes(role)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        success: false,
+        message: MESSAGES.USER.INVALID_ROLE,
+      });
+    }
+
     const existingUser = await User.getUserByEmail(email);
 
     if (existingUser) {

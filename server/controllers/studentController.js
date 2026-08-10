@@ -110,14 +110,18 @@ const updateStudent = async (req, res, next) => {
 
     const { name, email, course_id, city } = req.body;
 
-    const student = await Student.updateStudent(id, {
+    const result = await Student.updateStudent(id, {
       name,
       email,
       course_id,
       city,
     });
 
-    if (!student) {
+    // Student.updateStudent() returns the raw mysql2 result object, which
+    // is always truthy -- even when the id didn't match any row -- so the
+    // old "if (!student)" check here could never actually fire. affectedRows
+    // is what tells us whether the id was real.
+    if (result.affectedRows === 0) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({
         success: false,
         message: MESSAGES.STUDENT.NOT_FOUND,
