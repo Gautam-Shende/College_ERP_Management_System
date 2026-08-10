@@ -9,11 +9,9 @@ const departmentRoutes = require("./routes/departmentRoutes")
 
 const app = express();
 
-const allowedOrigin = process.env.CLIENT_URL;
-
 app.use(
   cors({
-    origin: allowedOrigin || true,
+    origin:process.env.CLIENT_URL,
     credentials: true,
   }),
 );
