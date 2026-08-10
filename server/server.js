@@ -1,4 +1,5 @@
 const express = require("express");
+const dotenv = require("dotenv");
 const studentRoutes = require("./routes/studentRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const userRoutes = require("./routes/userRoutes");
@@ -6,6 +7,8 @@ const cors = require("cors");
 const courseRoutes = require("./routes/courseRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const departmentRoutes = require("./routes/departmentRoutes")
+
+dotenv.config()
 
 const app = express();
 
