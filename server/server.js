@@ -10,8 +10,6 @@ const departmentRoutes = require("./routes/departmentRoutes")
 
 dotenv.config();
 
-const app = express();
-
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "https://college-erp-management-system-six.vercel.app",
@@ -37,6 +35,8 @@ app.use(
 
 // app.use(cors());
 
+const app = express();
+
 app.use(express.json());
 
 app.use("/api/students", studentRoutes);
@@ -44,6 +44,13 @@ app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/departments", departmentRoutes )
 app.use("/api/dashboard", dashboardRoutes);
+
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is running",
+  });
+});
 
 app.use(errorHandler);
 
