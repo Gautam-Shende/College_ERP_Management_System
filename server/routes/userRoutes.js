@@ -26,8 +26,7 @@ router.post("/login", loginUser);
 router.get("/me", authMiddleware, getCurrentUser);
 
 // Principal-only User Management Routes (base path is /api/users)
-// router.get("/", authMiddleware, authorize("principal"), getUsers);
-router.get("/", getUsers);
+router.get("/", authMiddleware, authorize("principal"), getUsers);
 router.get("/:id", authMiddleware, authorize("principal"), getUserById);
 router.post("/", authMiddleware, authorize("principal"), validateEmployee, createUser);
 router.put("/:id", authMiddleware, authorize("principal"), updateUser);
