@@ -1,5 +1,6 @@
 const express = require("express");
 const studentRoutes = require("./routes/studentRoutes");
+const dotenv = require("dotenv");
 const errorHandler = require("./middleware/errorHandler");
 const userRoutes = require("./routes/userRoutes");
 const cors = require("cors");
@@ -7,13 +8,27 @@ const courseRoutes = require("./routes/courseRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const departmentRoutes = require("./routes/departmentRoutes")
 
+dotenv.config();
+
 const app = express();
 
 app.use(
   cors({
-    // origin:process.env.CLIENT_URL,
-    origin:"https://college-erp-management-system-4d6j-three.vercel.app",
+    origin:process.env.CLIENT_URL,
     credentials: true,
+     methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
   }),
 );
 
