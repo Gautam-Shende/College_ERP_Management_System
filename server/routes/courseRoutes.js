@@ -18,7 +18,7 @@ const {
 
 // Read routes (Accessible by all staff roles)
 router.get(
-  "/api/courses",
+  "/",
   authMiddleware,
   authorize("principal", "hod", "teacher", "admission_staff"),
   getCourses,

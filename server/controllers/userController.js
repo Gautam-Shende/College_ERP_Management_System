@@ -6,9 +6,8 @@ const jwt = require("jsonwebtoken");
 const HTTP_STATUS = require("../constants/httpStatus");
 // All messages error from this file
 const MESSAGES = require("../constants/messages");
-// ALL Roles from this file 
-const ROLES = require("../constants/roles")
-
+// ALL Roles from this file
+const ROLES = require("../constants/roles");
 
 const getUsers = async (req, res) => {
   try {
@@ -175,7 +174,7 @@ const registerUser = async (req, res) => {
     if (!name || !email || !password || !role) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Name, email and password are required",
+        message: "Name, email, password and role are required",
       });
     }
 
@@ -189,15 +188,12 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // SECURITY: this route has no authMiddleware in front of it (can't --
-    // the person doesn't have a token yet), so anyone can call it directly
-    // with any JSON body they want, not just through this form. Before this
-    // check, whatever role string was sent got passed straight into
-    // User.createUser() -- a request with role: "principal" silently created
-    // a full admin account. createUser() (used by an already-logged-in
-    // principal to add staff) already guards against this with the same
-    // allowedRoles list; self-registration needs the identical guard.
-    const allowedRoles = [ROLES.TEACHER, ROLES.HOD, ROLES.ADMISSION_STAFF];
+    const allowedRoles = [
+      ROLES.PRINCIPAL,
+      ROLES.TEACHER,
+      ROLES.HOD,
+      ROLES.ADMISSION_STAFF,
+    ];
 
     if (!allowedRoles.includes(role)) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -215,6 +211,7 @@ const registerUser = async (req, res) => {
       });
     }
 
+    // Hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await User.createUser({
@@ -223,7 +220,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       role,
       department_id: null,
-      designation: null,
+      designation: role === ROLES.PRINCIPAL ? "Principal" : null,
       phone: null,
     });
 
@@ -235,11 +232,11 @@ const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    // console.error(error);
+    console.error("Register User Error:", error);
 
     return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
+      message: "Failed to register user",
     });
   }
 };
@@ -453,4 +450,3 @@ module.exports = {
   updateUserStatus,
   getCurrentUser,
 };
-
