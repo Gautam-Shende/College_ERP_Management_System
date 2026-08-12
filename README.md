@@ -1,187 +1,155 @@
 # College ERP Management System
 
-A role-based ERP web application built to digitize how a college's administrative staff manage students, courses, departments, and staff records — replacing scattered spreadsheets with a single system where every role sees only what they're supposed to.
+This is a simple College ERP (student management) web app I built to manage students, courses, departments and staff in one place. It has login with different roles, so a principal, HOD, teacher and admission staff all see different things based on what they are allowed to do.
 
-**GitHub Repo:** [https://github.com/Gautam-Shende/College_ERP_Management_System](https://github.com/Gautam-Shende/College_ERP_Management_System)
+## Live Demo
 
-<!-- Add these once available: -->
-<!-- **Live Demo:** [link] -->
-<!-- **Backend API:** [link] -->
-<!-- **Screenshots:** [./screenshots](./screenshots) -->
+- Client (frontend): https://college-erp-management-system-omega.vercel.app/login
+- Server (backend API): https://college-erp-management-system-ur8j.onrender.com
 
----
+Note: the backend is hosted on Render free plan, so it goes to sleep after some time of no use. The first request after that can take 30-50 seconds to respond. This is normal, just wait a bit.
 
-## 📌 What This Project Does
+## What this project does
 
-Most small colleges manage students, courses, and staff records manually or in disconnected spreadsheets — no access control, no audit trail, no single source of truth. This ERP centralizes that into one system, where every action is scoped to the logged-in user's role.
+- Login system with JWT (token based login)
+- Different access for different roles:
+  - Principal - can manage everything (students, employees, courses, departments)
+  - HOD - can manage students and view departments
+  - Teacher - can manage students
+  - Admission Staff - can add and manage students
+- Add, edit, view and delete students
+- Add, edit and manage employees (only principal can do this)
+- Manage courses and departments
+- A dashboard page with some charts and quick numbers (total students, total courses, etc)
+- Filter and search students by name, course, city
+- Register page for new staff to create an account (it stays inactive until principal approves it)
+- Works fine on mobile too, sidebar turns into a toggle menu on small screens
 
-**The core workflow:**
+## Tech Stack
 
-Admission staff register new students against a course and department. Teachers and HODs view student and course data relevant to their department. The principal has full visibility — managing staff accounts, approving/rejecting course and department changes, and viewing college-wide analytics on a live dashboard.
+**Frontend (client folder)**
+- React with TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Axios (for calling the API)
+- React Hook Form + Zod (for form validation)
+- Recharts (for dashboard charts)
 
----
+**Backend (server folder)**
+- Node.js with Express
+- MySQL (using mysql2 package)
+- JWT for login/auth
+- bcrypt for hashing passwords
+- CORS
 
-## ✨ Features
-
-### Role-based access control (RBAC)
-Four distinct roles — `principal`, `hod`, `teacher`, `admission_staff` — each with a different set of permissions enforced at the route level, not just hidden in the UI.
-
-- **Principal** — full access: manage staff accounts, approve/create/delete departments, full course and student control, dashboard analytics
-- **HOD** — manage courses within their department, view/update students
-- **Teacher** — read access to students, courses, and departments
-- **Admission staff** — register new students, read access to courses and departments
-
-### Student management
-- Create, update, and view student records (name, email, course, city)
-- Search by name/email, filter by course and city
-- Server-side pagination and sorting on every list endpoint
-
-### Course & department management
-- CRUD operations scoped by role (only principal/HOD can create or modify)
-- Courses linked to departments via foreign key relationships
-
-### Staff / user management
-- Principal-only staff account creation with role and designation assignment
-- Account activation/deactivation (`status: active/inactive`) instead of hard deletes
-- JWT-based authentication with bcrypt password hashing
-
-### Dashboard
-- Summary statistics (total students, courses, departments, staff)
-- Course-wise and city-wise student distribution
-- Recently added students, fetched in parallel for fast load
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Node.js** with **Express 5**
-- **MySQL** (via `mysql2`, connection pooling) — chosen over MongoDB here because student/course/department/user data is inherently relational (foreign keys, joins for reporting)
-- **JWT** (`jsonwebtoken`) for authentication, **bcrypt** for password hashing
-- Layered architecture: `routes → middleware (auth/authorize/validation) → controllers → models`
-- Centralized error handling (`errorHandler.js`) and request logging (`logger.js`)
-
-### Frontend
-- **React 19** with **TypeScript** and **Vite**
-- **Tailwind CSS v4** for styling
-- **React Router v7** for routing
-- **React Hook Form** + resolvers for form validation
-- **Axios** for API calls
-- **Recharts** for dashboard visualizations
-- **React Hot Toast** for notifications
-- **Lucide React** for icons
-
----
-
-## 📂 Project Structure
+## Folder Structure
 
 ```
 College_ERP_Management_System/
-├── client/                  # React + TypeScript frontend
-│   └── src/
-│       ├── api/             # Axios & API calls
-│       ├── components/      # Reusable UI components (by module)
-│       ├── context/         # Auth/global context providers
-│       ├── hooks/           # Custom React hooks
-│       ├── layouts/         # Page layout wrappers
-│       ├── pages/           # Route-level pages (by module)
-│       ├── routes/          # Route definitions
-│       ├── services/        # API service layer
-│       ├── types/           # TypeScript type definitions
-│       ├── utils/           # Helper functions
-│       └── validations/     # Form validation schemas
-└── server/                  # Express backend server
-    ├── config/               # DB connection (MySQL pool) Database
-    ├── controllers/          # Request handlers per module
-    ├── middleware/           # auth, authorize, validation, error handling, logging 
-    ├── models/                # Raw SQL queries per entity , schema architecture
-    ├── routes/                # Route definitions per module, 
-    └── server.js              # App entry point
+  client/     -> React frontend
+  server/     -> Express backend
 ```
 
----
+Inside client/src you will find folders like pages, components, hooks, services, routes and context.
 
-## 🔌 API Overview
+Inside server you will find folders like routes, controllers, models, middleware and config.
 
-Base URL: `/api`
+## How to run this project on your own computer
 
-| Module      | Endpoint                                                  | Access                                             |
-|-------------|-----------------------------------------------------------|----------------------------------------------------|
-| Auth        | `POST /users/register`, `POST /users/login`               | Public |
-| Users       | `GET /users/me`                                           | Any authenticated user |
-| Users       | `GET /users`, `POST /users`, `PUT /users/:id`, `PATCH /users/:id/status`, `DELETE /users/:id` | Principal only |
-| Students    | `GET /students`, `GET /students/:id`                      | Principal, HOD, Teacher, Admission staff           |
-| Students    | `POST /students`                                          | Principal, Admission staff                         |
-| Students    | `PUT /students/:id`                                       | Principal, HOD, Admission staff                    |
-| Students    | `DELETE /students/:id`                                    | Principal only                                     |
-| Courses     | `GET /courses`, `GET /courses/:id`                        | Principal, HOD, Teacher, Admission staff           |
-| Courses     | `POST /courses`, `PUT /courses/:id`, `DELETE /courses/:id`| Principal, HOD                                     |
-| Departments | `GET /departments`, `GET /departments/:id`                | Principal, HOD, Teacher, Admission staff           |
-| Departments | `POST /departments`, `PUT /departments/:id`, `DELETE /departments/:id` | Principal only                        |
-| Dashboard   | `GET /dashboard`                                          | Principal, HOD, Teacher, Admission staff           |
+You need Node.js and a MySQL database installed first.
 
-All protected routes require `Authorization: Bearer <token>` and are additionally gated by role via an `authorize()` middleware.
+### 1. Clone the repo
 
----
+```
+git clone https://github.com/Gautam-Shende/College_ERP_Management_System.git
+cd College_ERP_Management_System
+```
 
-## ⚙️ Setup & Installation
+### 2. Setup the backend
 
-### Prerequisites
-- Node.js (v18+)
-- MySQL server running locally or remotely
-
-### Backend
-```bash
+```
 cd server
 npm install
 ```
 
-Create a `.env` file inside `server/`:
+Create a `.env` file inside the server folder and add this:
+
 ```
 PORT=5000
 DB_HOST=localhost
-DB_USER=your_mysql_user
+DB_PORT=3306
+DB_USER=your_mysql_username
 DB_PASSWORD=your_mysql_password
-DB_NAME=college_erp
-JWT_SECRET=your_jwt_secret
+DB_NAME=your_database_name
+JWT_SECRET=any_random_secret_text
+CLIENT_URL=http://localhost:5173
 ```
 
-```bash
+You also need to create the database tables yourself (users, students, courses, departments) in MySQL before running the server, since there is no auto migration script yet.
+
+Run the server:
+
+```
 npm run dev
 ```
 
-### Frontend
-```bash
+Server will start on http://localhost:5000
+
+### 3. Setup the frontend
+
+Open a new terminal:
+
+```
 cd client
 npm install
 ```
 
-Create a `.env` file inside `client/`:
+Create a `.env` file inside the client folder:
+
 ```
 VITE_API_URL=http://localhost:5000/api
 ```
 
-```bash
+Run the client:
+
+```
 npm run dev
 ```
 
----
+Client will start on http://localhost:5173
 
-🔐 Security Notes
-User passwords are securely hashed using bcrypt before being saved in the database. Plain-text passwords are never stored.
+## Roles in this project
 
-• JWT tokens are verified on every protected request. The system also checks whether the related user account is still active.
+There are 4 roles:
 
-• All role-based access checks are handled on the server through middleware. The frontend does not control or restrict user permissions.
+1. principal - full access
+2. hod - department related access
+3. teacher - can handle students
+4. admission_staff - can add new students
 
-• Environment files such as .env, which may contain sensitive information, are excluded from version control using .gitignore.
+When someone registers using the Register page, they can only pick teacher, hod or admission_staff. Only a principal account (created directly in the database or by another principal) can create more principal-level access. This was done on purpose so random users can't sign up as an admin.
 
-🧠 Design Decisions
+## Known Limitations
 
-• MySQL instead of MongoDB: MySQL was selected because the system contains clearly related data. For example, each student belongs to a specific course, and each course belongs to a department. A relational database with foreign-key constraints was therefore a better fit than a document-based database.
+- No forgot password option yet
+- No file/photo upload for students yet
+- No email notification when a new employee registers
+- Free hosting plan means the backend can be a bit slow to wake up first time
 
-• Status flags instead of permanently deleting users: User accounts are deactivated rather than deleted permanently. This preserves historical information, such as which staff member created a particular student record, even if that staff member later leaves the organization.
+## Future Plans
 
+- Add attendance tracking
+- Add exam/marks section
+- Add email notifications
+- Add forgot password with OTP
 
+## Author
 
+Made by Gautam Shende, BCA student.
 
+- GitHub: https://github.com/Gautam-Shende
+- LinkedIn: https://www.linkedin.com/in/gautam-shende-262803290/
+- Portfolio: https://my-portfolio-website-ruddy-xi.vercel.app/
+
+If you find any bug or issue, feel free to open an issue on this repo.
