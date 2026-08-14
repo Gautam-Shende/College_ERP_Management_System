@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
-import useDepartments from "../../hooks/useDepartments";
-import type { Course } from "../../types/course";
+import React, { useState, useEffect } from "react"
+import { X } from "lucide-react"
+import useDepartments from "../../hooks/useDepartments"
+import type { Course } from "../../types/course"
+
 
 interface Props {
   isOpen: boolean;
