@@ -3,6 +3,7 @@ import { getToken } from "../utils/auth";
 
 // Create axios instance with fallback to http://localhost:5000/api for local testing
 const api = axios.create({
+  // baseURL: "http://localhost:5000/api",
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
   headers: {
     "Content-Type": "application/json",

@@ -22,8 +22,8 @@ function Navbar({ onMenuClick }: Props) {
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <button
           onClick={onMenuClick}
-          aria-label="Toggle sidebar"
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+          aria-label="Open sidebar"
+          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
         >
           <Menu size={20} />
         </button>

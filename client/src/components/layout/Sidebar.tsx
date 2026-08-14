@@ -44,17 +44,13 @@ interface Props {
   // Drawer state for small screens (< lg breakpoint).
   mobileOpen: boolean;
   onClose: () => void;
-  // Rail state for large screens — true shows icons only.
-  collapsed: boolean;
 }
 
-// Left navigation sidebar. Responsive in two ways:
-// - Below "lg", it's a fixed off-canvas drawer that slides in from the
-//   left over a dimmed backdrop, controlled by `mobileOpen`.
-// - At "lg" and above, it's always visible and sits in normal document
-//   flow next to the page content, and can be shrunk to an icon-only
-//   rail via `collapsed`.
-function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
+// Left navigation sidebar.
+// Responsive behavior:
+// - Below "lg", it's a fixed off-canvas drawer that slides in from the left over a backdrop, controlled by mobileOpen.
+// - At "lg" and above, it's always visible and fixed width (w-64) in the document layout.
+function Sidebar({ mobileOpen, onClose }: Props) {
   const { user } = useAuth();
 
   const filteredMenuItems = menuItems.filter((item) => {
@@ -68,23 +64,22 @@ function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
       {mobileOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-30 bg-slate-900/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
         />
       )}
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40 flex flex-col justify-between
+          fixed inset-y-0 left-0 z-50 flex w-64 flex-col justify-between
           border-r border-slate-800 bg-slate-900 text-white
-          transition-all duration-300 ease-in-out
+          transition-transform duration-300 ease-in-out
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          ${collapsed ? "w-20" : "w-64"}
-          lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 lg:z-10
+          lg:sticky lg:top-16 lg:z-10 lg:h-[calc(100vh-4rem)] lg:translate-x-0
         `}
       >
         <div>
           <div className="flex items-center justify-between border-b border-slate-800 p-6">
-            <div className={collapsed ? "lg:hidden" : ""}>
+            <div>
               <h1 className="text-xl font-bold tracking-wide text-blue-400">
                 Student Portal
               </h1>
@@ -109,11 +104,8 @@ function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
                   key={item.path}
                   to={item.path}
                   onClick={onClose}
-                  title={collapsed ? item.title : undefined}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all ${
-                      collapsed ? "lg:justify-center" : ""
-                    } ${
                       isActive
                         ? "bg-blue-600 text-white shadow"
                         : "text-slate-300 hover:bg-slate-800 hover:text-white"
@@ -121,7 +113,7 @@ function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
                   }
                 >
                   <Icon size={18} className="shrink-0" />
-                  <span className={collapsed ? "lg:hidden" : ""}>{item.title}</span>
+                  <span>{item.title}</span>
                 </NavLink>
               );
             })}
@@ -129,11 +121,7 @@ function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
         </div>
 
         {user && (
-          <div
-            className={`m-4 rounded-lg border border-slate-700/50 bg-slate-800/80 p-4 ${
-              collapsed ? "lg:hidden" : ""
-            }`}
-          >
+          <div className="m-4 rounded-lg border border-slate-700/50 bg-slate-800/80 p-4">
             <p className="text-xs text-slate-400">Signed in as</p>
             <p className="truncate text-sm font-semibold text-slate-200">
               {user.name}
