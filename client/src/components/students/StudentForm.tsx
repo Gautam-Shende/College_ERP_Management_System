@@ -37,16 +37,17 @@ function StudentForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Name */}
+      {/* Name input */}
       <div>
-        <label className="mb-2 block font-medium">Name</label>
+        <label className="mb-2 block font-medium text-slate-700">Name</label>
 
         <input
           autoComplete="name"
+          disabled={loading}
           {...register("name", {
             required: "Name is required",
           })}
-          className="w-full rounded border p-3 outline-none focus:border-blue-500"
+          className="w-full rounded border border-slate-300 p-3 outline-none focus:border-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
         />
 
         {errors.name && (
@@ -54,17 +55,18 @@ function StudentForm({
         )}
       </div>
 
-      {/* Email */}
+      {/* Email input */}
       <div>
-        <label className="mb-2 block font-medium">Email</label>
+        <label className="mb-2 block font-medium text-slate-700">Email</label>
 
         <input
           type="email"
           autoComplete="email"
+          disabled={loading}
           {...register("email", {
             required: "Email is required",
           })}
-          className="w-full rounded border p-3 outline-none focus:border-blue-500"
+          className="w-full rounded border border-slate-300 p-3 outline-none focus:border-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
         />
 
         {errors.email && (
@@ -72,17 +74,17 @@ function StudentForm({
         )}
       </div>
 
-      {/* Course */}
+      {/* Course select dropdown */}
       <div>
-        <label className="mb-2 block font-medium">Course</label>
-        <p className="text-red-500">Course ID : {defaultValues?.course_id}</p>
+        <label className="mb-2 block font-medium text-slate-700">Course</label>
+
         <select
           {...register("course_id", {
             required: "Course is required",
             valueAsNumber: true,
           })}
-          disabled={courses.length === 0}
-          className="w-full rounded border p-3"
+          disabled={loading || courses.length === 0}
+          className="w-full rounded border border-slate-300 p-3 disabled:bg-slate-100 disabled:cursor-not-allowed"
         >
           <option value="">
             {courses.length === 0 ? "Loading Courses..." : "Select Course"}
@@ -102,15 +104,16 @@ function StudentForm({
         )}
       </div>
 
-      {/* City */}
+      {/* City input */}
       <div>
-        <label className="mb-2 block font-medium">City</label>
+        <label className="mb-2 block font-medium text-slate-700">City</label>
 
         <input
+          disabled={loading}
           {...register("city", {
             required: "City is required",
           })}
-          className="w-full rounded border p-3 outline-none focus:border-blue-500"
+          className="w-full rounded border border-slate-300 p-3 outline-none focus:border-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
         />
 
         {errors.city && (
@@ -118,11 +121,11 @@ function StudentForm({
         )}
       </div>
 
-      {/* Submit */}
+      {/* Submit button - disabled during loading to prevent multiple clicks */}
       <button
         type="submit"
         disabled={loading}
-        className="rounded bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full sm:w-auto rounded bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 transition"
       >
         {loading ? "Saving..." : buttonText}
       </button>

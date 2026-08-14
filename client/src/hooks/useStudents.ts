@@ -32,8 +32,10 @@ function useStudents() {
   // Delete Loading
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  // Fetch student data with current search, filters, pagination, and sorting
   const fetchStudents = async () => {
     try {
+      // Set fetching true so UI can show loading indicator
       setFetching(true);
 
       const response = await getStudents(
@@ -53,9 +55,8 @@ function useStudents() {
       console.error(err);
       setError("Failed to load students");
     } finally {
-      setTimeout(() => {
-        setFetching(false);
-      }, 2000);
+      // Immediately stop fetching when API request completes
+      setFetching(false);
     }
   };
 

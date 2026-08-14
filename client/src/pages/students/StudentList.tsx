@@ -4,9 +4,13 @@ import StudentTable from "../../components/students/StudentTable";
 import Pagination from "../../components/common/Pagination";
 import useStudents from "../../hooks/useStudents";
 import useCourses from "../../hooks/useCourses";
+import { useAuth } from "../../context/AuthContext";
 
 // Student directory page supporting search, filters, pagination, and actions
 function StudentList() {
+  // Get current authenticated user details for role checking
+  const { user } = useAuth();
+
   const {
     students,
     loading,
@@ -53,13 +57,16 @@ function StudentList() {
           <p className="text-sm text-slate-500">Manage enrolled student records, courses, and details</p>
         </div>
 
-        <Link
-          to="/students/add"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
-        >
-          <UserPlus size={18} />
-          Add New Student
-        </Link>
+        {/* Only show Add Student button if logged-in user is principal */}
+        {user?.role === "principal" && (
+          <Link
+            to="/students/add"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
+          >
+            <UserPlus size={18} />
+            Add New Student
+          </Link>
+        )}
       </div>
 
       {/* Search & Dynamic Course Filters */}
@@ -78,7 +85,7 @@ function StudentList() {
           />
         </div>
 
-        {/* Dynamic Course Select */}
+        {/* Dynamic Course Select Filter */}
         <select
           value={course}
           onChange={(e) => {
@@ -108,22 +115,17 @@ function StudentList() {
         />
       </div>
 
-      {/* Table */}
+      {/* Student Table with search/filter loading indicator */}
       <StudentTable
         students={students}
         onDelete={deleteStudent}
         deletingId={deletingId}
+        fetching={fetching}
         sortBy={sortBy}
         order={order}
         setSortBy={setSortBy}
         setOrder={setOrder}
       />
-
-      {fetching && (
-        <p className="text-center text-xs font-medium text-blue-600">
-          Refreshing data...
-        </p>
-      )}
 
       {/* Pagination */}
       <div className="flex justify-center pt-2">

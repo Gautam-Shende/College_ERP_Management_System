@@ -41,8 +41,8 @@ function AppRoutes() {
             <Route path="/departments" element={<DepartmentList />} />
           </Route>
 
-          {/* Student Add Route (Principal & Admission Staff) */}
-          <Route element={<RoleProtectedRoute allowedRoles={["principal", "admission_staff"]} />}>
+          {/* Student Add Route (Principal Only) */}
+          <Route element={<RoleProtectedRoute allowedRoles={["principal"]} />}>
             <Route path="/students/add" element={<AddStudent />} />
           </Route>
 

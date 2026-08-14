@@ -28,10 +28,11 @@ router.get(
   getStudentById,
 );
 
+// Only principal role can add a new student
 router.post(
   "/",
   authMiddleware,
-  authorize("principal", "admission_staff"),
+  authorize("principal"),
   validateStudent,
   createStudent,
 );

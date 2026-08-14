@@ -5,6 +5,7 @@ interface Props {
   students: Student[];
   onDelete: (id: number) => void;
   deletingId: number | null;
+  fetching?: boolean;
 
   sortBy: string;
   order: string;
@@ -17,6 +18,7 @@ function StudentTable({
   students,
   onDelete,
   deletingId,
+  fetching = false,
 
   sortBy,
   order,
@@ -83,7 +85,17 @@ function StudentTable({
         </thead>
 
         <tbody>
-          {students.length === 0 ? (
+          {/* Show loading state while searching/filtering */}
+          {fetching ? (
+            <tr>
+              <td colSpan={6} className="py-10 text-center text-blue-600 font-medium">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                  <span>Searching students...</span>
+                </div>
+              </td>
+            </tr>
+          ) : students.length === 0 ? (
             <tr>
               <td colSpan={6} className="py-8 text-center text-gray-500">
                 No Students Found

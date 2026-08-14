@@ -74,12 +74,12 @@ function Sidebar({ mobileOpen, onClose, collapsed }: Props) {
 
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40 flex min-h-screen flex-col justify-between
+          fixed inset-y-0 left-0 z-40 flex flex-col justify-between
           border-r border-slate-800 bg-slate-900 text-white
           transition-all duration-300 ease-in-out
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           ${collapsed ? "w-20" : "w-64"}
-          lg:sticky lg:top-0 lg:translate-x-0
+          lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0 lg:z-10
         `}
       >
         <div>

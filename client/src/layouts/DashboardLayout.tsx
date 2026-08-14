@@ -28,16 +28,18 @@ function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 overflow-x-hidden">
       <Navbar onMenuClick={handleToggleSidebar} />
 
       <div className="flex">
+        {/* Sidebar drawer for mobile and fixed/sticky menu for desktop */}
         <Sidebar
           mobileOpen={mobileOpen}
           onClose={() => setMobileOpen(false)}
           collapsed={collapsed}
         />
 
+        {/* Main page content area */}
         <main className="min-w-0 flex-1 p-4 sm:p-6">
           <Outlet />
         </main>
