@@ -1,11 +1,11 @@
-const dashboardRepository = require("../repositories/dashboardRepository");
+const dashboardModel = require("../models/dashboardModel");
 
 const fetchDashboardData = async () => {
   const [summary, courseStats, cityStats, recentStudents] = await Promise.all([
-    dashboardRepository.getDashboardSummary(),
-    dashboardRepository.getCourseStats(),
-    dashboardRepository.getCityStats(),
-    dashboardRepository.getRecentStudents(),
+    dashboardModel.getDashboardSummary(),
+    dashboardModel.getCourseStats(),
+    dashboardModel.getCityStats(),
+    dashboardModel.getRecentStudents(),
   ]);
 
   return {

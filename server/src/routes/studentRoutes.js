@@ -16,14 +16,14 @@ const { validateStudent } = require("../middleware/validation");
 router.get(
   "/",
   authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
+  authorize("principal", "hod", "teacher"),
   getStudents,
 );
 
 router.get(
   "/:id",
   authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
+  authorize("principal", "hod", "teacher"),
   getStudentById,
 );
 
@@ -38,7 +38,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  authorize("principal", "hod", "admission_staff"),
+  authorize("principal"),
   validateStudent,
   updateStudent,
 );

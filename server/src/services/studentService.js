@@ -1,4 +1,4 @@
-const studentRepository = require("../repositories/studentRepository");
+const studentModel = require("../models/studentModel");
 
 const fetchStudents = async (
   page = 1,
@@ -15,17 +15,17 @@ const fetchStudents = async (
   const courseFilter = course ? course.trim() : "";
   const cityFilter = city ? city.trim() : "";
 
-  const students = await studentRepository.getStudents(
+  const students = await studentModel.getStudents(
     pageNum,
     limitNum,
     searchTerm,
-    sortBy,
-    order,
     courseFilter,
     cityFilter,
+    sortBy,
+    order,
   );
 
-  const total = await studentRepository.getStudentsCount(
+  const total = await studentModel.getStudentsCount(
     searchTerm,
     courseFilter,
     cityFilter,
@@ -43,7 +43,7 @@ const fetchStudents = async (
 };
 
 const fetchStudentById = async (id) => {
-  const student = await studentRepository.getStudentById(id);
+  const student = await studentModel.getStudentById(id);
   if (!student) {
     const error = new Error("Student not found..");
     error.statusCode = 404;
@@ -54,7 +54,7 @@ const fetchStudentById = async (id) => {
 
 const addStudent = async (studentData) => {
   const normalizedEmail = studentData.email.trim().toLowerCase();
-  const existingStudent = await studentRepository.getStudentByEmail(normalizedEmail);
+  const existingStudent = await studentModel.getStudentByEmail(normalizedEmail);
 
   if (existingStudent) {
     const error = new Error("Email already exists..");
@@ -62,7 +62,7 @@ const addStudent = async (studentData) => {
     throw error;
   }
 
-  const result = await studentRepository.createStudent({
+  const result = await studentModel.createStudent({
     name: studentData.name.trim(),
     email: normalizedEmail,
     course_id: studentData.course_id,
@@ -73,7 +73,7 @@ const addStudent = async (studentData) => {
 };
 
 const editStudent = async (id, studentData) => {
-  const result = await studentRepository.updateStudent(id, {
+  const result = await studentModel.updateStudent(id, {
     name: studentData.name.trim(),
     email: studentData.email.trim().toLowerCase(),
     course_id: studentData.course_id,
@@ -90,14 +90,14 @@ const editStudent = async (id, studentData) => {
 };
 
 const removeStudent = async (id) => {
-  const student = await studentRepository.getStudentById(id);
+  const student = await studentModel.getStudentById(id);
   if (!student) {
     const error = new Error("Student not found..");
     error.statusCode = 404;
     throw error;
   }
 
-  const result = await studentRepository.deleteStudent(id);
+  const result = await studentModel.deleteStudent(id);
   return result;
 };
 

@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
+const attendanceRoutes = require("./routes/attendanceRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
 const logger = require("./middleware/logger");
@@ -15,28 +16,7 @@ const logger = require("./middleware/logger");
 const app = express();
 
 app.use(express.json());
-
-// CORS: allow localhost for dev + deployed CLIENT_URL for production
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, curl, Postman)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  }),
-);
-
+app.use(cors());
 app.use(logger);
 
 app.get("/", (req, res) => {
@@ -58,6 +38,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.use(errorHandler);
 

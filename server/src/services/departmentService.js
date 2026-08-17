@@ -1,11 +1,11 @@
-const departmentRepository = require("../repositories/departmentRepository");
+const departmentModel = require("../models/departmentModel");
 
 const fetchDepartments = async () => {
-  return await departmentRepository.getDepartments();
+  return await departmentModel.getDepartments();
 };
 
 const fetchDepartmentById = async (id) => {
-  const department = await departmentRepository.getDepartmentById(id);
+  const department = await departmentModel.getDepartmentById(id);
   if (!department) {
     const error = new Error("Department not found");
     error.statusCode = 404;
@@ -17,18 +17,18 @@ const fetchDepartmentById = async (id) => {
 const addDepartment = async (departmentName) => {
   const name = departmentName.trim();
 
-  const existingDepartment = await departmentRepository.getDepartmentByName(name);
+  const existingDepartment = await departmentModel.getDepartmentByName(name);
   if (existingDepartment) {
     const error = new Error("Department already exists");
     error.statusCode = 409;
     throw error;
   }
 
-  return await departmentRepository.createDepartment(name);
+  return await departmentModel.createDepartment(name);
 };
 
 const editDepartment = async (id, departmentName) => {
-  const department = await departmentRepository.getDepartmentById(id);
+  const department = await departmentModel.getDepartmentById(id);
   if (!department) {
     const error = new Error("Department not found");
     error.statusCode = 404;
@@ -36,7 +36,7 @@ const editDepartment = async (id, departmentName) => {
   }
 
   const name = departmentName.trim();
-  const existingDepartment = await departmentRepository.getDepartmentByName(name);
+  const existingDepartment = await departmentModel.getDepartmentByName(name);
 
   if (existingDepartment && existingDepartment.id !== Number(id)) {
     const error = new Error("Department already exists");
@@ -44,18 +44,18 @@ const editDepartment = async (id, departmentName) => {
     throw error;
   }
 
-  return await departmentRepository.updateDepartment(id, name);
+  return await departmentModel.updateDepartment(id, name);
 };
 
 const removeDepartment = async (id) => {
-  const department = await departmentRepository.getDepartmentById(id);
+  const department = await departmentModel.getDepartmentById(id);
   if (!department) {
     const error = new Error("Department not found");
     error.statusCode = 404;
     throw error;
   }
 
-  return await departmentRepository.deleteDepartment(id);
+  return await departmentModel.deleteDepartment(id);
 };
 
 module.exports = {

@@ -5,11 +5,11 @@ const { getDashboard } = require("../controllers/dashboardController");
 const authMiddleware = require("../middleware/authMiddleware");
 const authorize = require("../middleware/authorize");
 
-// Get dashboard summary statistics (protected for all authenticated staff roles)
+// Get dashboard summary statistics (protected for Principal, HOD, and Teacher)
 router.get(
   "/",
   authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
+  authorize("principal", "hod", "teacher"),
   getDashboard,
 );
 

@@ -1,11 +1,11 @@
-const courseRepository = require("../repositories/courseRepository");
+const courseModel = require("../models/courseModel");
 
 const fetchCourses = async () => {
-  return await courseRepository.getCourses();
+  return await courseModel.getCourses();
 };
 
 const fetchCourseById = async (id) => {
-  const course = await courseRepository.getCourseById(id);
+  const course = await courseModel.getCourseById(id);
   if (!course) {
     const error = new Error("Course not found");
     error.statusCode = 404;
@@ -17,7 +17,7 @@ const fetchCourseById = async (id) => {
 const addCourse = async (courseData) => {
   const courseName = courseData.course_name.trim();
 
-  const department = await courseRepository.departmentExists(
+  const department = await courseModel.departmentExists(
     courseData.department_id,
   );
   if (!department) {
@@ -26,7 +26,7 @@ const addCourse = async (courseData) => {
     throw error;
   }
 
-  const existingCourse = await courseRepository.getCourseByName(
+  const existingCourse = await courseModel.getCourseByNameAndDept(
     courseName,
     courseData.department_id,
   );
@@ -36,21 +36,18 @@ const addCourse = async (courseData) => {
     throw error;
   }
 
-  return await courseRepository.createCourse({
-    course_name: courseName,
-    department_id: courseData.department_id,
-  });
+  return await courseModel.createCourse(courseName, courseData.department_id);
 };
 
 const editCourse = async (id, courseData) => {
-  const course = await courseRepository.getCourseById(id);
+  const course = await courseModel.getCourseById(id);
   if (!course) {
     const error = new Error("Course not found");
     error.statusCode = 404;
     throw error;
   }
 
-  const department = await courseRepository.departmentExists(
+  const department = await courseModel.departmentExists(
     courseData.department_id,
   );
   if (!department) {
@@ -60,7 +57,7 @@ const editCourse = async (id, courseData) => {
   }
 
   const courseName = courseData.course_name.trim();
-  const existingCourse = await courseRepository.getCourseByName(
+  const existingCourse = await courseModel.getCourseByNameAndDept(
     courseName,
     courseData.department_id,
   );
@@ -71,10 +68,11 @@ const editCourse = async (id, courseData) => {
     throw error;
   }
 
-  const result = await courseRepository.updateCourse(id, {
-    course_name: courseName,
-    department_id: courseData.department_id,
-  });
+  const result = await courseModel.updateCourse(
+    id,
+    courseName,
+    courseData.department_id,
+  );
 
   if (result.affectedRows === 0) {
     const error = new Error("Course not found");
@@ -86,14 +84,14 @@ const editCourse = async (id, courseData) => {
 };
 
 const removeCourse = async (id) => {
-  const course = await courseRepository.getCourseById(id);
+  const course = await courseModel.getCourseById(id);
   if (!course) {
     const error = new Error("Course not found");
     error.statusCode = 404;
     throw error;
   }
 
-  const assigned = await courseRepository.hasStudents(id);
+  const assigned = await courseModel.hasStudents(id);
   if (assigned) {
     const error = new Error(
       "Cannot delete course. Students are assigned to this course.",
@@ -102,7 +100,7 @@ const removeCourse = async (id) => {
     throw error;
   }
 
-  const result = await courseRepository.deleteCourse(id);
+  const result = await courseModel.deleteCourse(id);
   if (result.affectedRows === 0) {
     const error = new Error("Course not found");
     error.statusCode = 404;

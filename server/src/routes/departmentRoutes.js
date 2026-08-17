@@ -16,14 +16,14 @@ const { validateDepartment } = require("../middleware/validation");
 router.get(
   "/",
   authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
+  authorize("principal", "hod", "teacher"),
   getDepartments,
 );
 
 router.get(
   "/:id",
   authMiddleware,
-  authorize("principal", "hod", "teacher", "admission_staff"),
+  authorize("principal", "hod", "teacher"),
   getDepartmentById,
 );
 

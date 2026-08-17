@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const userRepository = require("../repositories/userRepository");
+const userModel = require("../models/userModel");
 const { HTTP_STATUS, MESSAGES } = require("../config/constants");
 
 const authMiddleware = async (req, res, next) => {
@@ -16,7 +16,7 @@ const authMiddleware = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await userRepository.getUserById(decoded.id);
+    const user = await userModel.getUserById(decoded.id);
 
     if (!user) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({
