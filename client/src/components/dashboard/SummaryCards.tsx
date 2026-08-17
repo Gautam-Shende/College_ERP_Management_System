@@ -1,45 +1,38 @@
-import { GraduationCap, BookOpen, MapPin, Users } from "lucide-react";
+import { GraduationCap, BookOpen, Building2 } from "lucide-react";
 
 import type { Summary } from "../../types/dashboard";
 
 interface Props {
-  summary: Summary;
+  summary?: Summary;
 }
 
 function SummaryCards({ summary }: Props) {
   const cards = [
     {
-      title: "Students",
-      value: summary.totalStudents,
+      title: "Total Students",
+      value: summary?.total_students ?? 0,
       subtitle: "Registered Students",
       icon: GraduationCap,
       color: "bg-blue-500",
     },
     {
-      title: "Courses",
-      value: summary.totalCourses,
+      title: "Total Courses",
+      value: summary?.total_courses ?? 0,
       subtitle: "Available Courses",
       icon: BookOpen,
       color: "bg-green-500",
     },
     {
-      title: "Cities",
-      value: summary.totalCities,
-      subtitle: "Student Locations",
-      icon: MapPin,
-      color: "bg-orange-500",
-    },
-    {
-      title: "Users",
-      value: summary.totalUsers,
-      subtitle: "System Employees",
-      icon: Users,
+      title: "Total Departments",
+      value: summary?.total_departments ?? 0,
+      subtitle: "Academic Departments",
+      icon: Building2,
       color: "bg-purple-500",
     },
   ];
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-6 sm:grid-cols-3">
       {cards.map((card) => {
         const Icon = card.icon;
 

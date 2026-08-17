@@ -10,7 +10,7 @@ import {
 import type { CityStat } from "../../types/dashboard";
 
 interface Props {
-  data: CityStat[];
+  data?: CityStat[];
 }
 
 const COLORS = [
@@ -23,8 +23,8 @@ const COLORS = [
   "#EC4899",
 ];
 
-function CityChart({ data }: Props) {
-  if (!data.length) {
+function CityChart({ data = [] }: Props) {
+  if (!data || !data.length) {
     return (
       <div className="rounded-xl bg-white p-5 shadow flex items-center justify-center h-[380px]">
         <p className="text-gray-500">No city data available.</p>
@@ -40,7 +40,7 @@ function CityChart({ data }: Props) {
         <PieChart>
           <Pie
             data={data}
-            dataKey="total"
+            dataKey="count"
             nameKey="city"
             outerRadius={110}
             label

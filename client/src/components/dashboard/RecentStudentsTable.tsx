@@ -1,19 +1,25 @@
+import { Link } from "react-router-dom";
 import type { RecentStudent } from "../../types/dashboard";
 
 interface Props {
-  students: RecentStudent[];
+  students?: RecentStudent[];
 }
 
-function RecentStudents({ students }: Props) {
+function RecentStudents({ students = [] }: Props) {
+  const studentList = students || [];
+
   return (
     <div className="overflow-hidden rounded-xl bg-white shadow-sm border">
       {/* Header */}
       <div className="flex items-center justify-between border-b p-5">
         <h2 className="text-xl font-semibold text-gray-800">Recent Students</h2>
 
-        <button className="text-sm font-medium text-blue-600 transition hover:underline">
+        <Link
+          to="/students"
+          className="text-sm font-medium text-blue-600 transition hover:underline"
+        >
           View All
-        </button>
+        </Link>
       </div>
 
       {/* Table */}
@@ -28,7 +34,7 @@ function RecentStudents({ students }: Props) {
           </thead>
 
           <tbody>
-            {students.length === 0 ? (
+            {studentList.length === 0 ? (
               <tr>
                 <td
                   colSpan={3}
@@ -38,7 +44,7 @@ function RecentStudents({ students }: Props) {
                 </td>
               </tr>
             ) : (
-              students.map((student) => (
+              studentList.map((student) => (
                 <tr
                   key={student.id}
                   className="border-b transition-colors duration-200 hover:bg-slate-50"

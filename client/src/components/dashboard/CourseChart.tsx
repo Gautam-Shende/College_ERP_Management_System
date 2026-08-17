@@ -11,11 +11,11 @@ import {
 import type { CourseStat } from "../../types/dashboard";
 
 interface Props {
-  data: CourseStat[];
+  data?: CourseStat[];
 }
 
-function CourseChart({ data }: Props) {
-  if (!data.length) {
+function CourseChart({ data = [] }: Props) {
+  if (!data || !data.length) {
     return (
       <div className="rounded-xl bg-white p-5 shadow flex items-center justify-center h-[380px]">
         <p className="text-gray-500">No course data available.</p>
@@ -43,7 +43,7 @@ function CourseChart({ data }: Props) {
 
           <Tooltip cursor={{ fill: "#f3f4f6" }} />
 
-          <Bar dataKey="total" fill="#3B82F6" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="count" fill="#3B82F6" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

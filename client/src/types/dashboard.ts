@@ -1,18 +1,17 @@
 export interface Summary {
-  totalStudents: number;
-  totalUsers: number;
-  totalCourses: number;
-  totalCities: number;
+  total_students: number;
+  total_courses: number;
+  total_departments: number;
 }
 
 export interface CourseStat {
   course: string;
-  total: number;
+  count: number;
 }
 
 export interface CityStat {
   city: string;
-  total: number;
+  count: number;
 }
 
 export interface RecentStudent {
@@ -21,6 +20,7 @@ export interface RecentStudent {
   email: string;
   course: string;
   city: string;
+  created_at?: string;
 }
 
 export interface DashboardData {

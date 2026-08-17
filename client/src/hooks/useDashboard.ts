@@ -12,10 +12,15 @@ function useDashboard(enabled = true) {
     try {
       setLoading(true);
       const response = await getDashboard();
-      setDashboard(response.data);
-      setError("");
-    } catch (err) {
-      setError("Failed to load dashboard");
+      if (response && response.data) {
+        setDashboard(response.data);
+        setError("");
+      } else {
+        setError("Failed to fetch dashboard data");
+      }
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || "Failed to load dashboard";
+      setError(msg);
     } finally {
       setLoading(false);
     }
