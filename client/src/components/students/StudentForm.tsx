@@ -23,8 +23,10 @@ function StudentForm({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Student>();
+
+  const isFormDisabled = loading || isSubmitting;
 
   useEffect(() => {
     if (defaultValues && courses.length > 0) {
@@ -43,7 +45,7 @@ function StudentForm({
 
         <input
           autoComplete="name"
-          disabled={loading}
+          disabled={isFormDisabled}
           {...register("name", {
             required: "Name is required",
           })}
@@ -62,7 +64,7 @@ function StudentForm({
         <input
           type="email"
           autoComplete="email"
-          disabled={loading}
+          disabled={isFormDisabled}
           {...register("email", {
             required: "Email is required",
           })}
@@ -83,7 +85,7 @@ function StudentForm({
             required: "Course is required",
             valueAsNumber: true,
           })}
-          disabled={loading || courses.length === 0}
+          disabled={isFormDisabled || courses.length === 0}
           className="w-full rounded border border-slate-300 p-3 disabled:bg-slate-100 disabled:cursor-not-allowed"
         >
           <option value="">
@@ -109,7 +111,7 @@ function StudentForm({
         <label className="mb-2 block font-medium text-slate-700">City</label>
 
         <input
-          disabled={loading}
+          disabled={isFormDisabled}
           {...register("city", {
             required: "City is required",
           })}
@@ -121,13 +123,13 @@ function StudentForm({
         )}
       </div>
 
-      {/* Submit button - disabled during loading to prevent multiple clicks */}
+      {/* Submit button - disabled during loading or submitting to prevent multiple clicks */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={isFormDisabled}
         className="w-full sm:w-auto rounded bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 transition"
       >
-        {loading ? "Saving..." : buttonText}
+        {isFormDisabled ? "Saving..." : buttonText}
       </button>
     </form>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import UserForm from "../../components/users/UserForm";
@@ -8,6 +8,8 @@ import type { User } from "../../types/user";
 
 function AddUser() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialRole = searchParams.get("role") || "";
 
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +33,11 @@ function AddUser() {
     <div className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow">
       <h1 className="mb-6 text-3xl font-bold">Add Employee</h1>
 
-      <UserForm onSubmit={handleSubmit} loading={loading} />
+      <UserForm
+        onSubmit={handleSubmit}
+        loading={loading}
+        defaultValues={initialRole ? ({ role: initialRole } as User) : undefined}
+      />
     </div>
   );
 }

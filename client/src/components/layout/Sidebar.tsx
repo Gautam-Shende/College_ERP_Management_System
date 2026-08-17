@@ -1,44 +1,7 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, BookOpen, Building2, UserCheck, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-
-interface MenuItem {
-  title: string;
-  path: string;
-  icon: React.ElementType;
-  roles?: string[];
-}
-
-const menuItems: MenuItem[] = [
-  {
-    title: "Dashboard",
-    path: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Students",
-    path: "/students",
-    icon: Users,
-  },
-  {
-    title: "Courses",
-    path: "/courses",
-    icon: BookOpen,
-  },
-  {
-    title: "Departments",
-    path: "/departments",
-    icon: Building2,
-    roles: ["principal", "hod"],
-  },
-  {
-    title: "Employees",
-    path: "/users",
-    icon: UserCheck,
-    roles: ["principal"],
-  },
-];
+import { menuItems } from "../../utils/menu";
 
 interface Props {
   // Drawer state for small screens (< lg breakpoint).

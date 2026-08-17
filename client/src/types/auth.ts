@@ -8,6 +8,9 @@ export interface RegisterRequest {
   email: string;
   password: string;
   role: string;
+  department_id?: number | null;
+  designation?: string;
+  phone?: string;
 }
 
 export interface LoginResponse {
@@ -29,5 +32,8 @@ export interface RegisterResponse {
   message: string;
   data: {
     id: number;
+    name: string;
+    email: string;
+    role: string;
   };
 }

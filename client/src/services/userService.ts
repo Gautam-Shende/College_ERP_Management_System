@@ -47,10 +47,9 @@ export const getUserById = async (id: number) => {
   return response.data;
 };
 
-// Create User
-
+// Create User (Register)
 export const createUser = async (data: any) => {
-  const response = await api.post("/users", data);
+  const response = await api.post("/users/register", data);
 
   return response.data;
 };

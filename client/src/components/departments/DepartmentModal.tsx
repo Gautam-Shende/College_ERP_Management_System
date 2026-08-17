@@ -26,13 +26,16 @@ export default function DepartmentModal({ isOpen, onClose, onSubmit, initialData
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!departmentName.trim()) return;
+    if (submitting || !departmentName.trim()) return;
 
-    setSubmitting(true);
-    const success = await onSubmit(departmentName.trim());
-    setSubmitting(false);
-    if (success) {
-      onClose();
+    try {
+      setSubmitting(true);
+      const success = await onSubmit(departmentName.trim());
+      if (success) {
+        onClose();
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -43,7 +46,12 @@ export default function DepartmentModal({ isOpen, onClose, onSubmit, initialData
           <h3 className="text-lg font-bold text-slate-800">
             {initialData ? "Edit Department" : "Add New Department"}
           </h3>
-          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-100">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={onClose}
+            className="rounded p-1 text-slate-400 hover:bg-slate-100 disabled:opacity-50"
+          >
             <X size={20} />
           </button>
         </div>
@@ -56,25 +64,27 @@ export default function DepartmentModal({ isOpen, onClose, onSubmit, initialData
             <input
               type="text"
               required
+              disabled={submitting}
               placeholder="e.g. Computer Science & Engineering"
               value={departmentName}
               onChange={(e) => setDepartmentName(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 p-2.5 text-sm outline-none focus:border-blue-500"
+              className="w-full rounded-lg border border-slate-300 p-2.5 text-sm outline-none focus:border-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t">
             <button
               type="button"
+              disabled={submitting}
               onClick={onClose}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition"
             >
               {submitting ? "Saving..." : initialData ? "Update Department" : "Create Department"}
             </button>

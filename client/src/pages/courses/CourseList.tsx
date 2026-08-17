@@ -12,7 +12,7 @@ export default function CourseList() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
   const { hasRole } = useAuth();
-  const canModify = hasRole("principal", "hod");
+  const canModify = hasRole("principal");
 
   const handleOpenAdd = () => {
     setEditingCourse(null);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,10 +36,10 @@ function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
         <h1 className="mb-2 text-center text-3xl font-bold text-slate-800">
-          Student Portal
+          College ERP Portal
         </h1>
 
         <p className="mb-8 text-center text-slate-500">Sign in to your account</p>
@@ -55,7 +55,8 @@ function Login() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full border-none p-3 text-sm outline-none"
+                disabled={isSubmitting}
+                className="w-full border-none p-3 text-sm outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
                 {...register("email")}
               />
             </div>
@@ -75,13 +76,15 @@ function Login() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
-                className="w-full border-none p-3 text-sm outline-none"
+                disabled={isSubmitting}
+                className="w-full border-none p-3 text-sm outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
                 {...register("password")}
               />
               <button
                 type="button"
+                disabled={isSubmitting}
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 disabled:opacity-50"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -100,20 +103,18 @@ function Login() {
           >
             {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
-
-          <p className="text-center text-sm text-slate-600">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="font-semibold text-blue-600 hover:underline"
-            >
-              Register
-            </Link>
-          </p>
         </form>
+
+        <p className="mt-6 text-center text-sm text-slate-500">
+          Need a new account?{" "}
+          <Link to="/register" className="font-semibold text-blue-600 hover:underline">
+            Register User
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
 
 export default Login;
+

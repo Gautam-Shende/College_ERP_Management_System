@@ -11,6 +11,8 @@ import AddUser from "../pages/users/AddUser";
 import EditUser from "../pages/users/EditUser";
 import CourseList from "../pages/courses/CourseList";
 import DepartmentList from "../pages/departments/DepartmentList";
+import Attendance from "../pages/attendance/Attendance";
+import PrincipalAttendanceOverview from "../pages/attendance/PrincipalAttendanceOverview";
 
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
@@ -31,13 +33,17 @@ function AppRoutes() {
       {/* Authenticated Application Routes */}
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          {/* General Dashboard & Directory Routes */}
+          {/* General Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/students" element={<StudentList />} />
-          <Route path="/courses" element={<CourseList />} />
 
-          {/* Department Management Route (Principal & HOD) */}
-          <Route element={<RoleProtectedRoute allowedRoles={["principal", "hod"]} />}>
+          {/* Academic Directories & Records (Principal, HOD, Teacher) */}
+          <Route
+            element={
+              <RoleProtectedRoute allowedRoles={["principal", "hod", "teacher"]} />
+            }
+          >
+            <Route path="/students" element={<StudentList />} />
+            <Route path="/courses" element={<CourseList />} />
             <Route path="/departments" element={<DepartmentList />} />
           </Route>
 
@@ -46,16 +52,37 @@ function AppRoutes() {
             <Route path="/students/add" element={<AddStudent />} />
           </Route>
 
-          {/* Student Edit Route (Principal, HOD & Admission Staff) */}
-          <Route element={<RoleProtectedRoute allowedRoles={["principal", "hod", "admission_staff"]} />}>
+          {/* Student Edit Route (Principal & HOD) */}
+          <Route
+            element={<RoleProtectedRoute allowedRoles={["principal", "hod"]} />}
+          >
             <Route path="/students/edit/:id" element={<EditStudent />} />
           </Route>
 
-          {/* Employee / User Management Routes (Principal Only) */}
+          {/* User Management Routes (Principal Only) */}
           <Route element={<RoleProtectedRoute allowedRoles={["principal"]} />}>
             <Route path="/users" element={<UserList />} />
             <Route path="/users/add" element={<AddUser />} />
             <Route path="/users/edit/:id" element={<EditUser />} />
+          </Route>
+
+          {/* Attendance Routes */}
+          <Route
+            element={
+              <RoleProtectedRoute
+                allowedRoles={["principal", "hod", "teacher", "admission_staff"]}
+              />
+            }
+          >
+            <Route path="/attendance" element={<Attendance />} />
+          </Route>
+
+          {/* Principal Attendance Overview Route */}
+          <Route element={<RoleProtectedRoute allowedRoles={["principal"]} />}>
+            <Route
+              path="/attendance/overview"
+              element={<PrincipalAttendanceOverview />}
+            />
           </Route>
         </Route>
       </Route>

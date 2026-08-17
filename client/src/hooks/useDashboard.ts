@@ -1,31 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getDashboard } from "../services/dashboardService";
 import type { DashboardData } from "../types/dashboard";
 
-function useDashboard() {
+function useDashboard(enabled = true) {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
-
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState("");
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
+    if (!enabled) return;
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      setLoading(true);
       const response = await getDashboard();
       setDashboard(response.data);
-
       setError("");
     } catch (err) {
       setError("Failed to load dashboard");
     } finally {
       setLoading(false);
     }
-  };
+  }, [enabled]);
 
   useEffect(() => {
-    fetchDashboard();
-  }, []);
+    if (enabled) {
+      fetchDashboard();
+    } else {
+      setLoading(false);
+    }
+  }, [enabled, fetchDashboard]);
 
   return {
     dashboard,

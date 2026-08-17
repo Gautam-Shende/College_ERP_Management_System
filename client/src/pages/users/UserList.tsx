@@ -49,17 +49,43 @@ function UserList() {
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Employee Management</h1>
-          <p className="text-sm text-slate-500">Manage user accounts, roles, and status across departments</p>
+          <h1 className="text-2xl font-bold text-slate-800">User & Employee Management</h1>
+          <p className="text-sm text-slate-500">Create, manage, and monitor staff accounts and roles</p>
         </div>
 
-        <Link
-          to="/users/add"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
-        >
-          <UserPlus size={18} />
-          Add New Employee
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="/users/add?role=hod"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-blue-600 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition"
+          >
+            <UserPlus size={15} />
+            Add HOD
+          </Link>
+
+          <Link
+            to="/users/add?role=teacher"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-100 transition"
+          >
+            <UserPlus size={15} />
+            Add Teacher
+          </Link>
+
+          <Link
+            to="/users/add?role=admission_staff"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-purple-600 bg-purple-50 px-3 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-100 transition"
+          >
+            <UserPlus size={15} />
+            Add Admission Staff
+          </Link>
+
+          <Link
+            to="/users/add"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-blue-700 transition"
+          >
+            <UserPlus size={16} />
+            Add Employee
+          </Link>
+        </div>
       </div>
 
       {/* Search & Dynamic Filters */}
