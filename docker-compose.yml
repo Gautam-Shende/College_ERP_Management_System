@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: college_erp_management_system
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: college_erp_management_system
+    ports:
+      - "5432:5432"
+    volumes:
+      - college_erp_management_data:/var/lib/postgresql/data
+
+volumes:
+  college_erp_management_data:
