@@ -12,8 +12,9 @@ function useDashboard(enabled = true) {
     try {
       setLoading(true);
       const response = await getDashboard();
-      if (response && response.data) {
-        setDashboard(response.data);
+      const payload = response?.data || (response?.summary ? response : null);
+      if (payload && payload.summary) {
+        setDashboard(payload);
         setError("");
       } else {
         setError("Failed to fetch dashboard data");
