@@ -17,12 +17,24 @@ const app = express();
 
 app.use(express.json());
 
+const clientUrl = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.trim().replace(/\/$/, "")
+  : undefined;
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: clientUrl,
     credentials: true,
   })
 );
+
+app.use("/api", (req, res, next) => {
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  next();
+});
 
 
 app.use(logger);

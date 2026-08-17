@@ -27,7 +27,7 @@ const dashboardModel = {
 
   getCityStats: async () => {
     const query = `
-      SELECT city, COUNT(id)::INTEGER AS count
+      SELECT COALESCE(city, 'Unknown') AS city, COUNT(id)::INTEGER AS count
       FROM students
       GROUP BY city
       ORDER BY count DESC
@@ -39,9 +39,9 @@ const dashboardModel = {
 
   getRecentStudents: async () => {
     const query = `
-      SELECT s.id, s.name, s.email, s.city, c.course_name AS course, s.created_at
+      SELECT s.id, s.name, s.email, COALESCE(s.city, 'Unknown') AS city, COALESCE(c.course_name, 'Unassigned') AS course, s.created_at
       FROM students s
-      JOIN courses c ON s.course_id = c.id
+      LEFT JOIN courses c ON s.course_id = c.id
       ORDER BY s.id DESC
       LIMIT 5
     `;
