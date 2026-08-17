@@ -1,15 +1,10 @@
 import axios from "axios";
 import { getToken } from "../utils/auth";
 
-const getBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (!envUrl) return "http://localhost:5000/api";
-  return envUrl.endsWith("/api") ? envUrl : `${envUrl}/api`;
-};
 
 // Create axios instance with authorization header interceptor
 const api = axios.create({
-  baseURL: getBaseUrl(),
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
