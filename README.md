@@ -1,155 +1,136 @@
 # College ERP Management System
 
-This is a simple College ERP (student management) web app I built to manage students, courses, departments and staff in one place. It has login with different roles, so a principal, HOD, teacher and admission staff all see different things based on what they are allowed to do.
+A full-stack, role-based College ERP Management System built with **React**, **Node.js (Express)**, and **PostgreSQL**.
 
-## Live Demo
+---
 
-- Client (frontend): https://college-erp-management-system-omega.vercel.app/login
-- Server (backend API): https://college-erp-management-system-ur8j.onrender.com
+## Technical Architecture
 
-Note: the backend is hosted on Render free plan, so it goes to sleep after some time of no use. The first request after that can take 30-50 seconds to respond. This is normal, just wait a bit.
+- **Frontend**: React + Vite + TypeScript, Lucide Icons, React Router DOM, Tailwind CSS
+- **Backend**: Node.js + Express.js (Layered architecture: `Routes` → `Controllers` → `Services` → `Models` → `PostgreSQL`)
+- **Database**: PostgreSQL 16 (Local containerized via Docker Compose)
+- **Authentication**: JWT (JSON Web Tokens) & `bcrypt` password hashing
+- **Role-Based Access Control (RBAC)**: Enforced on both backend API endpoints and frontend navigation (`Principal`, `HOD`, `Teacher`, `Admission Staff`)
 
-## What this project does
+---
 
-- Login system with JWT (token based login)
-- Different access for different roles:
-  - Principal - can manage everything (students, employees, courses, departments)
-  - HOD - can manage students and view departments
-  - Teacher - can manage students
-  - Admission Staff - can add and manage students
-- Add, edit, view and delete students
-- Add, edit and manage employees (only principal can do this)
-- Manage courses and departments
-- A dashboard page with some charts and quick numbers (total students, total courses, etc)
-- Filter and search students by name, course, city
-- Register page for new staff to create an account (it stays inactive until principal approves it)
-- Works fine on mobile too, sidebar turns into a toggle menu on small screens
+## Directory Structure
 
-## Tech Stack
-
-**Frontend (client folder)**
-- React with TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- Axios (for calling the API)
-- React Hook Form + Zod (for form validation)
-- Recharts (for dashboard charts)
-
-**Backend (server folder)**
-- Node.js with Express
-- MySQL (using mysql2 package)
-- JWT for login/auth
-- bcrypt for hashing passwords
-- CORS
-
-## Folder Structure
-
-```
+```text
 College_ERP_Management_System/
-  client/     -> React frontend
-  server/     -> Express backend
+├── client/                     # React + Vite Frontend Application
+│   ├── src/
+│   │   ├── api/                # Axios instance configuration
+│   │   ├── components/         # Reusable UI components & modals
+│   │   ├── context/            # AuthContext provider
+│   │   ├── hooks/              # Custom React hooks (useDashboard, etc.)
+│   │   ├── pages/              # View pages (Login, Register, Dashboard, Students, Users, etc.)
+│   │   ├── routes/             # Protected and role-based app routing
+│   │   ├── services/           # Frontend API service functions
+│   │   ├── types/              # TypeScript interfaces
+│   │   └── utils/              # Helper utilities & menu items
+│   ├── .env.example
+│   └── package.json
+│
+├── server/                     # Node.js + Express Backend Application
+│   ├── src/
+│   │   ├── config/             # DB connection pool (db.js) & constants
+│   │   ├── controllers/        # Request handlers & response formatters
+│   │   ├── middleware/         # Auth, RBAC, Validation, Logger, Error Handler
+│   │   ├── models/             # Parameterized SQL database queries (inline)
+│   │   ├── routes/             # Express API route declarations
+│   │   ├── services/           # Business logic & validations
+│   │   ├── app.js              # Express app setup & middleware pipeline
+│   │   └── server.js           # HTTP server initialization
+│   ├── .env.example
+│   └── package.json
+│
+├── database/                   # Single source of truth database scripts
+│   ├── schema.sql              # Tables, PKs, FKs, constraints, triggers & indexes
+│   └── seed.sql                # Initial demo data (Departments, Courses, Students)
+│
+├── docker-compose.yml          # Local PostgreSQL Docker configuration
+├── .gitignore
+└── README.md
 ```
 
-Inside client/src you will find folders like pages, components, hooks, services, routes and context.
+---
 
-Inside server you will find folders like routes, controllers, models, middleware and config.
+## Local Development Workflow
 
-## How to run this project on your own computer
+### Step 1: Install & Start Docker PostgreSQL
+Ensure Docker Desktop is running, then start the PostgreSQL container:
 
-You need Node.js and a MySQL database installed first.
-
-### 1. Clone the repo
-
+```bash
+docker compose up -d
 ```
-git clone https://github.com/Gautam-Shende/College_ERP_Management_System.git
-cd College_ERP_Management_System
+*This starts a PostgreSQL 16 container at `localhost:5432` with a persistent Docker volume (`postgres_data`).*
+
+### Step 2: Initialize Database Schema & Seed Data
+Execute `schema.sql` followed by `seed.sql` on the `college_erp_management` database:
+
+```bash
+# Using psql inside Docker container:
+docker exec -i college_erp_postgres psql -U postgres -d college_erp_management < database/schema.sql
+docker exec -i college_erp_postgres psql -U postgres -d college_erp_management < database/seed.sql
 ```
 
-### 2. Setup the backend
+### Step 3: Configure Environment Variables
 
-```
-cd server
-npm install
-```
-
-Create a `.env` file inside the server folder and add this:
-
-```
+**Backend Environment (`server/.env`)**:
+```env
 PORT=5000
+NODE_ENV=development
 DB_HOST=localhost
-DB_PORT=3306
-DB_USER=your_mysql_username
-DB_PASSWORD=your_mysql_password
-DB_NAME=your_database_name
-JWT_SECRET=any_random_secret_text
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=college_erp_management
+JWT_SECRET=your_super_secret_jwt_key_here
 CLIENT_URL=http://localhost:5173
 ```
 
-You also need to create the database tables yourself (users, students, courses, departments) in MySQL before running the server, since there is no auto migration script yet.
-
-Run the server:
-
+**Frontend Environment (`client/.env`)**:
+```env
+VITE_API_URL=http://localhost:5000
 ```
+
+### Step 4: Install Dependencies & Run
+
+**Backend (`server/`)**:
+```bash
+cd server
+npm install
 npm run dev
 ```
 
-Server will start on http://localhost:5000
-
-### 3. Setup the frontend
-
-Open a new terminal:
-
-```
+**Frontend (`client/`)**:
+```bash
 cd client
 npm install
-```
-
-Create a `.env` file inside the client folder:
-
-```
-VITE_API_URL=http://localhost:5000/api
-```
-
-Run the client:
-
-```
 npm run dev
 ```
 
-Client will start on http://localhost:5173
+Access the application at `http://localhost:5173`.
 
-## Roles in this project
+---
 
-There are 4 roles:
+## User Registration API Endpoint
 
-1. principal - full access
-2. hod - department related access
-3. teacher - can handle students
-4. admission_staff - can add new students
+To create users (Principal, HOD, Teacher, Admission Staff), send a POST request:
 
-When someone registers using the Register page, they can only pick teacher, hod or admission_staff. Only a principal account (created directly in the database or by another principal) can create more principal-level access. This was done on purpose so random users can't sign up as an admin.
+```http
+POST /api/users/register
+Content-Type: application/json
 
-## Known Limitations
+{
+  "name": "John Doe",
+  "email": "john@gmail.com",
+  "password": "123456",
+  "role": "teacher",
+  "department_id": 1,
+  "designation": "Assistant Professor",
+  "phone": "9876543210"
+}
+```
 
-- No forgot password option yet
-- No file/photo upload for students yet
-- No email notification when a new employee registers
-- Free hosting plan means the backend can be a bit slow to wake up first time
-
-## Future Plans
-
-- Add attendance tracking
-- Add exam/marks section
-- Add email notifications
-- Add forgot password with OTP
-
-## Author
-
-Made by Gautam Shende, BCA student.
-
-- GitHub: https://github.com/Gautam-Shende
-- LinkedIn: https://www.linkedin.com/in/gautam-shende-262803290/
-- Portfolio: https://my-portfolio-website-ruddy-xi.vercel.app/
-
-If you find any bug or issue, feel free to open an issue on this repo.
