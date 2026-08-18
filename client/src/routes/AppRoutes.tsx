@@ -27,7 +27,6 @@ function AppRoutes() {
       <Route element={<PublicRoute />}>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
       </Route>
 
       {/* Authenticated Application Routes */}
@@ -59,11 +58,12 @@ function AppRoutes() {
             <Route path="/students/edit/:id" element={<EditStudent />} />
           </Route>
 
-          {/* User Management Routes (Principal Only) */}
+          {/* User Management & Registration Routes (Principal Only) */}
           <Route element={<RoleProtectedRoute allowedRoles={["principal"]} />}>
             <Route path="/users" element={<UserList />} />
             <Route path="/users/add" element={<AddUser />} />
             <Route path="/users/edit/:id" element={<EditUser />} />
+            <Route path="/register" element={<Register />} />
           </Route>
 
           {/* Attendance Routes */}

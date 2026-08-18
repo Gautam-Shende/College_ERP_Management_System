@@ -51,7 +51,7 @@ function UserForm({ defaultValues, onSubmit, loading = false }: Props) {
         <label className="mb-2 block font-medium text-slate-700">Full Name *</label>
         <input
           disabled={isFormDisabled}
-          placeholder="e.g. John Doe"
+          placeholder="e.g. Gautam Shende"
           {...register("name", { required: true })}
           className="w-full rounded border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
         />
@@ -63,7 +63,7 @@ function UserForm({ defaultValues, onSubmit, loading = false }: Props) {
         <input
           type="email"
           disabled={isFormDisabled}
-          placeholder="e.g. john@gmail.com"
+          placeholder="e.g. gautamshende144@gmail.com"
           {...register("email", { required: true })}
           className="w-full rounded border border-slate-300 p-3 text-sm focus:border-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
         />

@@ -45,6 +45,7 @@ function StudentForm({
 
         <input
           autoComplete="name"
+          placeholder="e.g. Gautam Shende"
           disabled={isFormDisabled}
           {...register("name", {
             required: "Name is required",
@@ -64,6 +65,7 @@ function StudentForm({
         <input
           type="email"
           autoComplete="email"
+          placeholder="e.g. gautam@gmail.com"
           disabled={isFormDisabled}
           {...register("email", {
             required: "Email is required",

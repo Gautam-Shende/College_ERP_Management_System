@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { UserCheck, CalendarCheck, ShieldCheck, User as UserIcon } from "lucide-react";
+import { UserCheck, CalendarCheck, ShieldCheck, User as UserIcon, UserPlus } from "lucide-react";
 import useDashboard from "../../hooks/useDashboard";
 import SummaryCards from "../../components/dashboard/SummaryCards";
 import CourseChart from "../../components/dashboard/CourseChart";
@@ -105,7 +105,14 @@ function Dashboard() {
             <p className="text-sm text-slate-500">Institution Overview & System Control</p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
+            >
+              <UserPlus size={18} />
+              Register User
+            </Link>
             <Link
               to="/users"
               className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
@@ -124,6 +131,40 @@ function Dashboard() {
         </div>
 
         <SummaryCards summary={dashboard.summary} />
+
+        {/* User Registration Quick Access Card */}
+        <div className="rounded-xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-blue-50 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-800">Register New Staff Account</h2>
+            <p className="text-sm text-slate-600">Register and assign HOD, Teacher, or Admission Staff accounts directly.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/users/add?role=hod"
+              className="rounded-lg border border-indigo-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-700 shadow-sm hover:bg-indigo-50 transition"
+            >
+              + Register HOD
+            </Link>
+            <Link
+              to="/users/add?role=teacher"
+              className="rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-semibold text-emerald-700 shadow-sm hover:bg-emerald-50 transition"
+            >
+              + Register Teacher
+            </Link>
+            <Link
+              to="/users/add?role=admission_staff"
+              className="rounded-lg border border-purple-200 bg-white px-3 py-2 text-xs font-semibold text-purple-700 shadow-sm hover:bg-purple-50 transition"
+            >
+              + Register Admission Staff
+            </Link>
+            <Link
+              to="/register"
+              className="rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700 transition"
+            >
+              Register Form
+            </Link>
+          </div>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <CourseChart data={dashboard.courseStats} />

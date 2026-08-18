@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -104,13 +104,6 @@ function Login() {
             {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-slate-500">
-          Need a new account?{" "}
-          <Link to="/register" className="font-semibold text-blue-600 hover:underline">
-            Register User
-          </Link>
-        </p>
       </div>
     </div>
   );
