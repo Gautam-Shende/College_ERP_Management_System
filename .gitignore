@@ -1,3 +1,0 @@
-# Docker Configuration files (avoid recursive inclusion in build context)
-docker-compose.yml
-docker-compose.yaml
