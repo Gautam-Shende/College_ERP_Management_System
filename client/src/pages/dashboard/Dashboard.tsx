@@ -16,8 +16,8 @@ function Dashboard() {
   const { user } = useAuth();
   const isAdmissionStaff = user?.role === "admission_staff";
   
-  // Disable general dashboard API call for Admission Staff
-  const { dashboard, loading, error } = useDashboard(!isAdmissionStaff);
+  // Fetch dashboard summary statistics for all authorized roles including Admission Staff
+  const { dashboard, loading, error } = useDashboard();
   const [myAttendance, setMyAttendance] = useState<MyAttendanceData | null>(null);
 
   useEffect(() => {
@@ -34,9 +34,28 @@ function Dashboard() {
   if (isAdmissionStaff) {
     return (
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">Staff Dashboard</h1>
-          <p className="text-sm text-slate-500">Welcome back, {user?.name}</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">Admission Staff Dashboard</h1>
+            <p className="text-sm text-slate-500">Welcome back, {user?.name}</p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/students/add"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
+            >
+              <UserPlus size={18} />
+              Add New Student
+            </Link>
+            <Link
+              to="/students"
+              className="inline-flex items-center gap-2 rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-slate-900 transition"
+            >
+              <UserCheck size={18} />
+              Student Directory
+            </Link>
+          </div>
         </div>
 
         {/* Profile Card */}
@@ -61,6 +80,35 @@ function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Quick Student Enrollment Action Card */}
+        <div className="rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-800">Student Enrollment & Management</h2>
+            <p className="text-sm text-slate-600">Enroll new students into the institution or update existing student records.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/students/add"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-blue-700 transition"
+            >
+              <UserPlus size={16} />
+              + Add New Student
+            </Link>
+            <Link
+              to="/students"
+              className="rounded-lg border border-blue-200 bg-white px-4 py-2 text-xs font-semibold text-blue-700 shadow-sm hover:bg-blue-50 transition"
+            >
+              View Directory
+            </Link>
+          </div>
+        </div>
+
+        {/* Summary Statistics Cards */}
+        {dashboard && <SummaryCards summary={dashboard.summary} />}
+
+        {/* Recent Enrolled Students */}
+        {dashboard && <RecentStudents students={dashboard.recentStudents} />}
 
         {/* Attendance Summary */}
         {myAttendance && (

@@ -35,25 +35,37 @@ function AppRoutes() {
           {/* General Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Academic Directories & Records (Principal, HOD, Teacher) */}
+          {/* Academic Directories & Records */}
+          <Route
+            element={
+              <RoleProtectedRoute allowedRoles={["principal", "hod", "teacher", "admission_staff"]} />
+            }
+          >
+            <Route path="/students" element={<StudentList />} />
+          </Route>
           <Route
             element={
               <RoleProtectedRoute allowedRoles={["principal", "hod", "teacher"]} />
             }
           >
-            <Route path="/students" element={<StudentList />} />
             <Route path="/courses" element={<CourseList />} />
             <Route path="/departments" element={<DepartmentList />} />
           </Route>
 
-          {/* Student Add Route (Principal Only) */}
-          <Route element={<RoleProtectedRoute allowedRoles={["principal"]} />}>
+          {/* Student Add Route */}
+          <Route
+            element={
+              <RoleProtectedRoute allowedRoles={["principal", "hod", "admission_staff"]} />
+            }
+          >
             <Route path="/students/add" element={<AddStudent />} />
           </Route>
 
-          {/* Student Edit Route (Principal & HOD) */}
+          {/* Student Edit Route */}
           <Route
-            element={<RoleProtectedRoute allowedRoles={["principal", "hod"]} />}
+            element={
+              <RoleProtectedRoute allowedRoles={["principal", "hod", "admission_staff"]} />
+            }
           >
             <Route path="/students/edit/:id" element={<EditStudent />} />
           </Route>

@@ -25,7 +25,7 @@ export const menuItems: MenuItem[] = [
     title: "Students",
     path: "/students",
     icon: Users,
-    roles: ["principal", "hod", "teacher"],
+    roles: ["principal", "hod", "teacher", "admission_staff"],
   },
   {
     title: "Courses",

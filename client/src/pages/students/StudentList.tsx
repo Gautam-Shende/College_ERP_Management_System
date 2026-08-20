@@ -57,8 +57,8 @@ function StudentList() {
           <p className="text-sm text-slate-500">Manage enrolled student records, courses, and details</p>
         </div>
 
-        {/* Only show Add Student button if logged-in user is principal */}
-        {user?.role === "principal" && (
+        {/* Show Add Student button if user is principal, admission_staff, or hod */}
+        {(user?.role === "principal" || user?.role === "admission_staff" || user?.role === "hod") && (
           <Link
             to="/students/add"
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition"
