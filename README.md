@@ -18,7 +18,7 @@ A modern, full-stack, enterprise-grade **College ERP (Enterprise Resource Planni
 | :--- | :--- | :--- |
 | **Frontend Web Application** | **Vercel** | 🔗 [https://college-erp-management-system-omega.vercel.app](https://college-erp-management-system-omega.vercel.app) |
 | **Backend RESTful API** | **Render** | 🔗 [https://college-erp-management-system-ur8j.onrender.com](https://college-erp-management-system-ur8j.onrender.com) |
-| **Screenshots-of-this-projects working condition** - [Screentshots](./screenshots)
+| **Screenshots-of-this-projects working condition** | **Screenshots** - | [Screentshots](./screenshots) |
 ---
 
 ## ✨ Key Features & Capabilities
